@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b5">
+    <folder id="0" name="base">
+        <file id="0" name="base/electric_0.png" width="116" height="116" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="base/electric_1.png" width="116" height="72" pivot_x="0" pivot_y="1"/>
+        <file id="2" name="base/electric_2.png" width="72" height="72" pivot_x="0" pivot_y="1"/>
+        <file id="3" name="base/electric_3.png" width="116" height="30" pivot_x="0" pivot_y="1"/>
+        <file id="4" name="base/electric_6.png" width="92" height="50" pivot_x="0" pivot_y="1"/>
+        <file id="5" name="base/electric_5.png" width="50" height="56" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <entity id="0" name="logicwire">
+        <animation id="0" name="None" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_5" folder="0" file="5" abs_x="-0.002679" abs_y="-0.205285" abs_pivot_x="0.502679" abs_pivot_y="0.508434" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_5">
+                <key id="0" spin="0">
+                    <object folder="0" file="5" x="-0.002679" y="-0.205285" pivot_x="0.502679" pivot_y="0.508434" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="1" name="LU" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_2" folder="0" file="2" abs_x="-0.282556" abs_y="0.739801" abs_pivot_x="0.792979" abs_pivot_y="0.791468" abs_angle="270" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_2">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-0.282556" y="0.739801" pivot_x="0.792979" pivot_y="0.791468" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="2" name="L" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_6" folder="0" file="4" abs_x="-0.118326" abs_y="0.917108" abs_pivot_x="0.618326" abs_pivot_y="0.483793" abs_angle="270" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_6">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="-0.118326" y="0.917108" pivot_x="0.618326" pivot_y="0.483793" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="3" name="R" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_6" folder="0" file="4" abs_x="-0.118326" abs_y="0.917108" abs_pivot_x="0.618326" abs_pivot_y="0.483793" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_6">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="-0.118326" y="0.917108" pivot_x="0.618326" pivot_y="0.483793" angle="90"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="4" name="U" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_6" folder="0" file="4" abs_x="-0.118326" abs_y="0.917108" abs_pivot_x="0.618326" abs_pivot_y="0.483793" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_6">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="-0.118326" y="0.917108" pivot_x="0.618326" pivot_y="0.483793" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="5" name="D" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_6" folder="0" file="4" abs_x="-0.118326" abs_y="0.917108" abs_pivot_x="0.618326" abs_pivot_y="0.483793" abs_angle="180" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_6">
+                <key id="0" spin="0">
+                    <object folder="0" file="4" x="-0.118326" y="0.917108" pivot_x="0.618326" pivot_y="0.483793" angle="180"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="6" name="LD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_2" folder="0" file="2" abs_x="-0.282556" abs_y="-0.260199" abs_pivot_x="0.792979" abs_pivot_y="0.791468" abs_angle="180" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_2">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-0.282556" y="-0.260199" pivot_x="0.792979" pivot_y="0.791468" angle="180"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="7" name="RU" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_2" folder="0" file="2" abs_x="-0.282556" abs_y="-0.260199" abs_pivot_x="0.792979" abs_pivot_y="0.791468" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_2">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-0.282556" y="-0.260199" pivot_x="0.792979" pivot_y="0.791468" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="8" name="RD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_2" folder="0" file="2" abs_x="-0.282556" abs_y="-0.260199" abs_pivot_x="0.792979" abs_pivot_y="0.791468" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_2">
+                <key id="0" spin="0">
+                    <object folder="0" file="2" x="-0.282556" y="-0.260199" pivot_x="0.792979" pivot_y="0.791468" angle="90"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="9" name="LR" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_3" folder="0" file="3" abs_x="0.000934" abs_y="0" abs_pivot_x="0.499066" abs_pivot_y="0.491979" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_3">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="0.000934" pivot_x="0.499066" pivot_y="0.491979" angle="90"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="10" name="UD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_3" folder="0" file="3" abs_x="0.000934" abs_y="0" abs_pivot_x="0.499066" abs_pivot_y="0.491979" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_3">
+                <key id="0" spin="0">
+                    <object folder="0" file="3" x="0.000934" pivot_x="0.499066" pivot_y="0.491979" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="11" name="LRD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_1" folder="0" file="1" abs_x="-0.303935" abs_y="-0.43632" abs_pivot_x="0.494337" abs_pivot_y="0.781522" abs_angle="90" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_1">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-0.303935" y="-0.43632" pivot_x="0.494337" pivot_y="0.781522" angle="90"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="12" name="LRU" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_1" folder="0" file="1" abs_x="-0.303935" abs_y="-0.43632" abs_pivot_x="0.494337" abs_pivot_y="0.781522" abs_angle="270" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_1">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-0.303935" y="-0.43632" pivot_x="0.494337" pivot_y="0.781522" angle="270"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="13" name="LUD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_1" folder="0" file="1" abs_x="-0.303935" abs_y="-0.43632" abs_pivot_x="0.494337" abs_pivot_y="0.781522" abs_angle="180" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_1">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-0.303935" y="-0.43632" pivot_x="0.494337" pivot_y="0.781522" angle="180"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="14" name="RUD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_1" folder="0" file="1" abs_x="-0.303935" abs_y="-0.43632" abs_pivot_x="0.494337" abs_pivot_y="0.781522" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_1">
+                <key id="0" spin="0">
+                    <object folder="0" file="1" x="-0.303935" y="-0.43632" pivot_x="0.494337" pivot_y="0.781522" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+        <animation id="15" name="LRUD" length="1000">
+            <mainline>
+                <key id="0">
+                    <object_ref id="0" name="electric_0" folder="0" file="0" abs_x="0.237744" abs_y="0.020106" abs_pivot_x="0.492141" abs_pivot_y="0.49273" abs_angle="0" abs_scale_x="1" abs_scale_y="1" abs_a="1" timeline="0" key="0" z_index="0"/>
+                </key>
+            </mainline>
+            <timeline id="0" name="electric_0">
+                <key id="0" spin="0">
+                    <object folder="0" file="0" x="0.237744" y="0.020106" pivot_x="0.492141" pivot_y="0.49273" angle="0"/>
+                </key>
+            </timeline>
+        </animation>
+    </entity>
+</spriter_data>

@@ -60,7 +60,7 @@ end
 _G.RegiWire = regiWire
 
 --[[
-    寻找导线连接的系统
+    寻找导线连接的系统，返回系统的不重复ID
 ]]
 local function getLinkSys(wire)
     local id = GUID2ID[wire.GUID]
@@ -84,8 +84,28 @@ end
 local function wireDeployed(wire)
     local id = regiWire(wire)
     local linkt = getLinkSys(wire)
+    
     local newSysID = #SYSINFO+1
-    if next(linkt) ~= nil then -- 合并系统
+    SYSINVALID[newSysID] = false
+    WIREINSYS[id] = newSysID
+
+    SYSINFO[newSysID] = { -- 不管有没有连接的系统都要新建一个系统
+        wires = {
+            wire.GUID,
+        },
+        powers = {},
+        consumers = {},
+    }
+
+    if POWERORCONSUMERS[id] then
+        if Ents[POWERORCONSUMERS[id]]:HasTag('power') then
+            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[id])
+        elseif Ents[POWERORCONSUMERS[id]]:HasTag('consumer') then
+            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id])
+        end
+    end
+
+    if next(linkt) ~= nil then -- 如果连接了其他就合并过来
         local newsys = {
             wires = {wire.GUID},
             consumers = {wire:HasTag('consumer') or nil},
@@ -93,16 +113,16 @@ local function wireDeployed(wire)
         }
         for i, oldsysID in pairs(linkt) do
             SYSINVALID[oldsysID] = true
-            table.insert(newsys.wires, )
+            for _, item in pairs(SYSINFO[oldsysID].wires) do
+                table.insert(SYSINFO[newSysID].wires, item)
+            end
+            for _, item in pairs(SYSINFO[oldsysID].powers) do
+                table.insert(SYSINFO[newSysID].powers, item)
+            end
+            for _, item in pairs(SYSINFO[oldsysID].consumers) do
+                table.insert(SYSINFO[newSysID].consumers, item)
+            end
         end
-    else -- 新建系统
-        SYSINFO[newSysID] = {
-            wires = {
-                wire,
-            }
-        }
-        SYSINVALID[newSysID] = false
-        WIREINSYS[id] = newSysID
     end
 end
 _G.WireDeployed = wireDeployed

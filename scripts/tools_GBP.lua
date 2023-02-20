@@ -77,7 +77,7 @@ _G.getTableSize = function(tab)
 end
 
 -- 删除表中重复元素
-function table:DeleteEqualElement(table)
+_G.table:DeleteEqualElement = function(table)
     local exist = {}
     --把相同的元素覆盖掉
     for v, k in pairs(table) do
