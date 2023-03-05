@@ -12,8 +12,10 @@ dst_compatible = true
 all_clients_require_mod = true
 client_only_mod = false
 
--- icon_atlas = "modicon.xml"
+-- icon_atlas = "images/modicon.xml"
 -- icon = "modicon.tex"
+icon_atlas = "images/255.xml"
+icon = "255.tex"
 
 -- server_filter_tags = L and { "LEGION", } or { "棱镜", }
 
@@ -106,4 +108,34 @@ configuration_options = {
         },
         default = 64,
     },
+
+    {name = "Title", label = "", options = {{description = "", data = ""},}, default = "",},
+    {
+        name = "Title",
+        label = L and "Glassic API",
+        options = {{description = "", data = ""},},
+        default = "",
+    },
+    L and {
+        name = "GlassicPrefabOn",
+        label = "Glassic API Tools",
+        hover = "是否启用Glassic API中的玻璃工具",
+        options = 
+        {
+            {description = "Yes", data = true},
+            {description = "No", data = false},
+        },
+        default = false,
+    } or {
+        name = "GlassicPrefabOn",
+        label = "Glassic API Tools",
+        hover = "是否启用Glassic API中的玻璃工具",
+        options = 
+        {
+            {description = "Yes", data = true},
+            {description = "No", data = false},
+        },
+        default = false,
+    },
+
 }

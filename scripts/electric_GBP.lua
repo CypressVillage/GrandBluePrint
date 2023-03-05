@@ -17,7 +17,9 @@ local emptySys = {
 
 -- 用于建立电源和用电器的Action关系
 local function LINK_ACTIONS_BY_ID(id)
-    
+    for _, sys in pairs(ELECTRIC_SYS) do
+        
+    end
 end
 
 -- 找到电线相连接的部分，只用于电线，返回的是物体
@@ -244,6 +246,46 @@ _G.RemoveObjFromSys = function(inst)
                 _G.RefreshElectricSys(Ents[id])
             end
         end
+    end
+end
+
+_G.OnDeployPower = function(power)
+    local x, y, z = power.Transform:GetWorldPosition()
+    local wire = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    if wire[1] then
+        local sysID = getIDfromSys(wire[1])
+        if sysID ~= 0 then
+            table.insert(ELECTRIC_SYS[sysID].powers, power.GUID)
+        end
+    end
+end
+
+_G.OnRemovePower = function(power)
+    local x, y, z = power.Transform:GetWorldPosition()
+    local wire = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    if wire[1] then
+        local sysID = getIDfromSys(wire[1])
+        table.remove(ELECTRIC_SYS[sysID].powers, findIndex(power.GUID, ELECTRIC_SYS[sysID].powers))
+    end
+end
+
+_G.OnDeployConsumer = function(consumer)
+    local x, y, z = consumer.Transform:GetWorldPosition()
+    local wire = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    if wire[1] then
+        local sysID = getIDfromSys(wire[1])
+        if sysID ~= 0 then
+            table.insert(ELECTRIC_SYS[sysID].consumers, consumer.GUID)
+        end
+    end
+end
+
+_G.OnRemoveConsumer = function(consumer)
+    local x, y, z = consumer.Transform:GetWorldPosition()
+    local wire = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    if wire[1] then
+        local sysID = getIDfromSys(wire[1])
+        table.remove(ELECTRIC_SYS[sysID].consumers, findIndex(consumer.GUID, ELECTRIC_SYS[sysID].consumers))
     end
 end
 

@@ -23,17 +23,18 @@ local function onhammered(inst, worker)
 
     inst.components.lootdropper:SpawnLootPrefab('trinket_6')
 
-    RemoveObjFromSys(inst)
+    -- RemoveObjFromSys(inst)
+    _G.wireRemoved(inst)
     if inst then inst:Remove() end
 end
 
 local function refreshState(obj, isexpand)
-    local linkThings = getLinkedThings(obj).wires
+    local linkThings = getLinkedThings(obj.GUID)
     local Animstr = ''
-    if linkThings.left and linkThings.left:HasTag('wire') then Animstr = Animstr..'L' end
-    if linkThings.right and linkThings.right:HasTag('wire') then Animstr = Animstr..'R' end
-    if linkThings.up and linkThings.up:HasTag('wire') then Animstr = Animstr..'U' end
-    if linkThings.down and linkThings.down:HasTag('wire') then Animstr = Animstr..'D' end
+    if linkThings.left then Animstr = Animstr..'L' end
+    if linkThings.right then Animstr = Animstr..'R' end
+    if linkThings.up then Animstr = Animstr..'U' end
+    if linkThings.down then Animstr = Animstr..'D' end
     
     if Animstr ~= '' then
         obj.AnimState:PlayAnimation(Animstr)
@@ -42,13 +43,37 @@ local function refreshState(obj, isexpand)
     end
 
     if isexpand then
-        for _, v in pairs(linkThings) do
-            if v:HasTag('wire') then
-                refreshState(v, false)
-            end
+        for i, v in pairs(linkThings) do
+            -- if i ~= 'other' then 
+                refreshState(Ents[v], false)
+                dbg('expand')
+            -- ends
         end
     end
 end
+
+-- local function refreshState(obj, isexpand)
+--     local linkThings = getLinkedThings(obj).wires
+--     local Animstr = ''
+--     if linkThings.left and linkThings.left:HasTag('wire') then Animstr = Animstr..'L' end
+--     if linkThings.right and linkThings.right:HasTag('wire') then Animstr = Animstr..'R' end
+--     if linkThings.up and linkThings.up:HasTag('wire') then Animstr = Animstr..'U' end
+--     if linkThings.down and linkThings.down:HasTag('wire') then Animstr = Animstr..'D' end
+    
+--     if Animstr ~= '' then
+--         obj.AnimState:PlayAnimation(Animstr)
+--     else
+--         obj.AnimState:PlayAnimation('None')
+--     end
+
+--     if isexpand then
+--         for _, v in pairs(linkThings) do
+--             if v:HasTag('wire') then
+--                 refreshState(v, false)
+--             end
+--         end
+--     end
+-- end
 
 local function ondeploywire(inst, pt, deployer, rot )
     local wire = SpawnPrefab('electricwire')
@@ -61,9 +86,11 @@ local function ondeploywire(inst, pt, deployer, rot )
         
         -- wire.SoundEmitter:PlaySound("dontstarve/common/place_structure_wood")
         
+        _G.WireDeployed(wire)
         refreshState(wire, true)
-        RefreshElectricSys(wire)
-        listElectricSysInfo()
+        -- refreshState(wire, true)
+        -- RefreshElectricSys(wire)
+        -- listElectricSysInfo()
     end
 end
 
@@ -71,8 +98,10 @@ local function onsave(inst, data)
 end
 
 local function onload(inst, data)
+    _G.WireDeployed(inst)
     refreshState(inst, true)
-    RefreshElectricSys(inst)
+    -- refreshState(inst, true)
+    -- RefreshElectricSys(inst)
 end
 
 local function fn()

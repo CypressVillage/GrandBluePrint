@@ -26,44 +26,53 @@ _G.pairsByKeys = function(t)
     end
 end
 
--- 打印整张表，level是展开几级子表
-local TAB = '....'
-_G.ShowTable = function (t, level, pre, tab, lv)
+-- 打印整张表，2个参数，level是展开几级子表
+local TAB = '  '
+_G.ShowTable = function (t, level, newline, pre, tab, lv)
     local level = level or 10
     local tab = tab or ''
     local rtn = pre or ('{')
     local lv = lv or 0
-    for index, value in ipairs(t) do
+
+    for index, value in pairs(t) do
+        if newline then rtn = rtn..'\n'..tab..TAB else rtn = rtn..' ' end
         if type(value) == 'table' then
             if lv < level then
-                rtn = rtn..'\n'..tab..TAB.._G.ShowTable(value, level, pre, tab..TAB, lv+1)..','
+                rtn = rtn..tostring(index)..' = '..ShowTable(value, level, newline, pre, tab..TAB, lv+1)..','
             else
-                rtn = rtn..'\n'..tab..TAB..'{ ... }'..','    
+                rtn = rtn..tostring(index)..' = { ... },'
             end
         else
-            rtn = rtn..'\n'..tab..TAB..tostring(index)..' = '..tostring(value)..','
+            rtn = rtn..tostring(index)..' = '..tostring(value)..','
         end
     end
-    rtn = rtn..'\n'..tab..'}'
+    if newline then rtn = rtn..'\n'..tab..'}' else rtn = rtn..' '..'}' end
     return rtn
 end
 
 -- 全局DEBUG
 _G.dbg = function(str)
-    local rtn = 'GBP_DEBUG_INFO>>>'..str
+    local rtn = '[GBP DEBUG] '..str
     print(rtn)
     if DEBUG_GBP then
         c_announce(rtn)
     end
 end
 
--- 判断元素是否在表中，返回位置，返回0表示没找到
-_G.findIndex = function(val, table)
+-- 判断元素是否在表中，返回位置，返回nil表示没找到
+table.indexof = function(table, val)
     for id, v in pairs(table) do
         if val == v then return id end
     end
-    return 0
+    dbg('table.indexof: '..tostring(val)..' not found in table')
+    return nil
 end
+-- _G.findIndex = function(val, table)
+--     for id, v in pairs(table) do
+--         if val == v then return id end
+--     end
+--     return 0
+-- end
 
 -- 获取表中元素个数，不包括nil但包括空表
 _G.getTableSize = function(tab)
@@ -76,19 +85,15 @@ _G.getTableSize = function(tab)
     return num
 end
 
--- 删除表中重复元素
-_G.table:DeleteEqualElement = function(table)
-    local exist = {}
-    --把相同的元素覆盖掉
-    for v, k in pairs(table) do
-        exist[k] = true
+-- 删除表中的重复元素，能处理空表
+_G.delRepeat = function(tab)
+    local rtn = {}
+    for _, v in pairs(tab) do
+        if 0 ~= _G.findIndex(v, rtn) then
+            rtn[#rtn+1] = v
+        end
     end
-    --重新排序表
-    local newTable = {}
-    for v, k in pairs(exist) do
-        table.insert(newTable, v)
-    end
-    return newTable
+    return rtn
 end
 
 --[ 地图图标注册 ]--  >>from Legion<<

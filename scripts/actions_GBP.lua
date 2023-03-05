@@ -51,3 +51,53 @@ AddComponentAction('USEITEM', 'repair_broken_wire', function (inst, doer, target
 end)
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.REPAIR_BROKEN_WIRE, "dolongaction"))
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.REPAIR_BROKEN_WIRE, "dolongaction"))
+
+-- --[[
+--     电器action
+-- ]]
+-- local CONSUMERSON = Action({ priority = 2 })
+-- CONSUMERSON.id = 'CONSUMERSON'
+-- CONSUMERSON.str = STRINGS.ACTIONS_GBP.CONSUMERSON
+-- CONSUMERSON.fn = function(act)
+--     act.doer.components.inventory:ConsumeByName(act.invobject.prefab, 1)
+--     act.doer.components.inventory:ConsumeByName(act.target.prefab, 1)
+    
+
+--     local wire = SpawnPrefab('electricwire_item')
+--     act.doer.components.inventory:GiveItem(wire)
+
+--     return true
+-- end
+-- AddAction(CONSUMERSON)
+-- AddComponentAction('SCENE', 'repair_broken_wire', function (inst, doer, target, actions, right)
+--     if right and target.prefab == 'trinket_6' then
+--         table.insert(actions, ACTIONS.CONSUMERSON)
+--     end
+-- end)
+-- AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.CONSUMERSON, "dolongaction"))
+-- AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.CONSUMERSON, "dolongaction"))
+
+-- --[[
+--     电源action
+-- ]]
+-- local REPAIR_BROKEN_WIRE = Action({ priority = 2 })
+-- REPAIR_BROKEN_WIRE.id = 'REPAIR_BROKEN_WIRE'
+-- REPAIR_BROKEN_WIRE.str = STRINGS.ACTIONS_GBP.REPAIR_BROKEN_WIRE
+-- REPAIR_BROKEN_WIRE.fn = function(act)
+--     act.doer.components.inventory:ConsumeByName(act.invobject.prefab, 1)
+--     act.doer.components.inventory:ConsumeByName(act.target.prefab, 1)
+    
+
+--     local wire = SpawnPrefab('electricwire_item')
+--     act.doer.components.inventory:GiveItem(wire)
+
+--     return true
+-- end
+-- AddAction(REPAIR_BROKEN_WIRE)
+-- AddComponentAction('USEITEM', 'repair_broken_wire', function (inst, doer, target, actions, right)
+--     if right and target.prefab == 'trinket_6' then
+--         table.insert(actions, ACTIONS.REPAIR_BROKEN_WIRE)
+--     end
+-- end)
+-- AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.REPAIR_BROKEN_WIRE, "dolongaction"))
+-- AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.REPAIR_BROKEN_WIRE, "dolongaction"))
