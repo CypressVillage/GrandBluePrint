@@ -134,6 +134,7 @@ local function MakeWire(data)
 
         inst:AddTag("NOBLOCK")
         inst:AddTag('wire')
+        inst:AddTag(data.type..'wire')
 
         inst.entity:SetPristine()
         if not TheWorld.ismastersim then
@@ -203,13 +204,27 @@ local function MakeWire(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs), Prefab  (data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil)
+    local function postinitfn(inst)
+        local oldtestfn = inst.components.placer.testfn
+        inst.components.placer.testfn = function(inst, pt, mouseover, deployer)
+            local oldresult = oldtestfn(inst, pt, mouseover, deployer)
+            local x = math.floor(pt.x) + .5
+            local z = math.floor(pt.z) + .5
+            local ents = TheSim:FindEntities(x, 0, z, 0.1, {}, {  'player', 'FX' }, { 'wire', 'logicparts' })
+            if #ents > 0 then
+                return false && oldresult
+            end
+            return true && oldresult
+        end
+    end
+
+    return Prefab(data.name, fn, assets, prefabs), Prefab  (data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, postinitfn)
 end
 
 local wireprefabs = {}
 local wiredata = {
-    { name = 'electricwire' },
-    { name = 'logicwire' },
+    { name = 'electricwire', type = 'electric' },
+    { name = 'logicwire', type = 'logic' },
 }
 
 for i, v in ipairs(wiredata) do

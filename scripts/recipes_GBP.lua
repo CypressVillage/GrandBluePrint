@@ -27,16 +27,6 @@ _G.RegistMiniMapImage_legion("batterymed")
 _G.RegistMiniMapImage_legion("batterylg")
 
 
-local function PlacerTest_wire(inst, pt, mouseover, deployer)
-    local x = math.floor(pt.x) + .5
-    local z = math.floor(pt.z) + .5
-    local ents = TheSim:FindEntities(x, 0, z, 0.1, { 'electricwire' })
-    if #ents > 0 then
-        return false
-    end
-    return true
-end
-
 -- 注册配方
 AddRecipe2(
     'tridprinter',
@@ -110,7 +100,6 @@ AddRecipe2(
         numtogive = 6,
         atlas = 'images/inventoryimages/logicwire.xml',
         image = 'logicwire.tex',
-        -- testfn = PlacerTest_wire,
     },
     { 'ELECTRICENGINEERING' }
 )

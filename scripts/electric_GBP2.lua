@@ -21,19 +21,15 @@ local NWIRE = _G.CONFIGS_GBP.NWIRE
 
 
 -- 导线的所有信息，索引都是GUID
--- local GUIDT = {} GUIDT[NWIRE] = nil                         -- GUID
--- local GUID2ID = {} GUID2ID[NWIRE] = nil                     -- GUID反向表
 local LINK_L = {} LINK_L[NWIRE] = nil                       -- 左
 local LINK_R = {} LINK_R[NWIRE] = nil                       -- 右
 local LINK_U = {} LINK_U[NWIRE] = nil                       -- 上
 local LINK_D = {} LINK_D[NWIRE] = nil                       -- 下
 local POWERORCONSUMERS = {} POWERORCONSUMERS[NWIRE] = nil   -- 电器
 local WIREINSYS = {} WIREINSYS[NWIRE] = nil                 -- 所在系统ID
--- local WIREINVALID = {} WIREINVALID[NWIRE] = nil             -- 是否移除
 
 -- 系统的所有信息，索引也为ID
 local NEWSYSID = 0                                          -- 新系统ID
--- local SYSINVALID = {}                                       -- 是否移除
 local SYSINFO = {}                                          -- 系统内容
 -- SYSINFO = {
 --     [id] = {

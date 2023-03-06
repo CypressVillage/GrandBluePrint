@@ -5,7 +5,7 @@ PrefabFiles = {
     'tridprinter',
     'computer',
     'techtools',
-    'electricwire',
+    'wires',
     'batteries'
 }
 

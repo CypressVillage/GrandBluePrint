@@ -97,6 +97,9 @@ AddPrefabPostInit('reskin_tool', function(inst)
     end)
 end)
 
+-- 导线不能重叠放置
+-- AddComponent
+
 -- Glassic API工具
 if not CONFIGS_GBP.GLASSICAPITOOLS then
     
