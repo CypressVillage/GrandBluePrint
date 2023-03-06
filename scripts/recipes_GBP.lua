@@ -3,6 +3,8 @@ local _G = GLOBAL
 assets = {
     Asset("ATLAS", "images/inventoryimages/electricwire.xml"),
     Asset("IMAGE", "images/inventoryimages/electricwire.tex"),
+    Asset("ATLAS", "images/inventoryimages/logicwire.xml"),
+    Asset("IMAGE", "images/inventoryimages/logicwire.tex"),
     Asset("ATLAS", "images/inventoryimages/computer.xml"),
     Asset("IMAGE", "images/inventoryimages/computer.tex"),
     Asset("ATLAS", "images/inventoryimages/batterysm.xml"),
@@ -93,7 +95,22 @@ AddRecipe2(
         numtogive = 6,
         atlas = 'images/inventoryimages/electricwire.xml',
         image = 'electricwire.tex',
-        testfn = PlacerTest_wire,
+        -- testfn = PlacerTest_wire,
+    },
+    { 'ELECTRICENGINEERING' }
+)
+
+AddRecipe2(
+    'logicwire_item',
+    {
+        Ingredient('cutgrass', 5),
+    },
+    TECH.ELECTRICENGINEERING_ONE,
+    {
+        numtogive = 6,
+        atlas = 'images/inventoryimages/logicwire.xml',
+        image = 'logicwire.tex',
+        -- testfn = PlacerTest_wire,
     },
     { 'ELECTRICENGINEERING' }
 )
