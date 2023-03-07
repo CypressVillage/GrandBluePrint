@@ -11,8 +11,6 @@ local function MakeWire(data)
     local assets =
     {
         Asset("ANIM", "anim/"..data.name..".zip"),
-        -- Asset("ATLAS", "images/inventoryimages/"..data.name..".xml"),
-        -- Asset("IMAGE", "images/inventoryimages/"..data.name..".tex"),
     }
 
     local prefabs =
@@ -29,12 +27,21 @@ local function MakeWire(data)
         inst.components.lootdropper:SpawnLootPrefab('trinket_6')
 
         -- RemoveObjFromSys(inst)
-        _G.wireRemoved(inst)
+        if data.type == 'electric' then
+            _G.wireRemoved(inst)
+        elseif data.type == 'logic' then
+            _G.LogicWireRemoved(inst)
+        end
         if inst then inst:Remove() end
     end
 
     local function refreshState(obj, isexpand)
-        local linkThings = getLinkedThings(obj.GUID)
+        local linkThings
+        if data.type == 'electric' then
+            linkThings = _G.getLinkedThings(obj.GUID)
+        elseif data.type == 'logic' then
+            linkThings = _G.getLogicLinkedThings(obj.GUID)
+        end
         local Animstr = ''
         if linkThings.left then Animstr = Animstr..'L' end
         if linkThings.right then Animstr = Animstr..'R' end
@@ -51,7 +58,6 @@ local function MakeWire(data)
             for i, v in pairs(linkThings) do
                 -- if i ~= 'other' then 
                 refreshState(Ents[v], false)
-                dbg('expand')
                 -- ends
             end
         end
@@ -91,7 +97,11 @@ local function MakeWire(data)
 
             -- wire.SoundEmitter:PlaySound("dontstarve/common/  place_structure_wood")
 
-            _G.WireDeployed(wire)
+            if data.type == 'electric' then
+                _G.WireDeployed(wire)
+            elseif data.type == 'logic' then
+                _G.LogicWireDeployed(wire)
+            end
             refreshState(wire, true)
             -- refreshState(wire, true)
             -- RefreshElectricSys(wire)
@@ -212,9 +222,9 @@ local function MakeWire(data)
             local z = math.floor(pt.z) + .5
             local ents = TheSim:FindEntities(x, 0, z, 0.1, {}, {  'player', 'FX' }, { 'wire', 'logicparts' })
             if #ents > 0 then
-                return false && oldresult
+                return false and oldresult
             end
-            return true && oldresult
+            return true and oldresult
         end
     end
 

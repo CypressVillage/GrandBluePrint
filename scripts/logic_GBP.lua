@@ -2,6 +2,9 @@
     逻辑系统
 ]]
 
+local _G = GLOBAL
+local NWIRE = _G.CONFIGS_GBP.NWIRE
+
 local LINK_L = {} LINK_L[NWIRE] = nil                       -- 左
 local LINK_R = {} LINK_R[NWIRE] = nil                       -- 右
 local LINK_U = {} LINK_U[NWIRE] = nil                       -- 上
@@ -20,6 +23,17 @@ local SYSINFO = {}                                          -- 系统内容
 --     },
 --     ...
 -- }
+
+--[[ 接口，获取导线连接内容 ]]--
+_G.getLogicLinkedThings = function(GUID)
+    return {
+        left = LINK_L[GUID],
+        right = LINK_R[GUID],
+        up = LINK_U[GUID],
+        down = LINK_D[GUID],
+        other = MACHINES[GUID],
+    }
+end
 
 -- [[ 注册信号线 ]] --
 local function regiLogicWire(wire)
@@ -105,6 +119,7 @@ local function wireDeployed(wire)
             end
         end
     end
+    dbg(_G.ShowLogicInfo())
 end
 
 --[[ 注销系统，重新注册系统中的导线 ]]--
@@ -143,3 +158,56 @@ local function wireRemoved(wire)
     end
 end
 
+_G.ShowLogicWireInfo = function(GUID)
+    local str = ''
+    str = str..'导线['..GUID..']: '
+    if LINK_L[GUID] then
+        str = str..'左:'..LINK_L[GUID]..','
+    end
+    if LINK_R[GUID] then
+        str = str..'右:'..LINK_R[GUID]..','
+    end
+    if LINK_U[GUID] then
+        str = str..'上:'..LINK_U[GUID]..','
+    end
+    if LINK_D[GUID] then
+        str = str..'下:'..LINK_D[GUID]..',\n'
+    end
+    if POWERORCONSUMERS[GUID] then
+        str = str..'连接的用电器:'..POWERORCONSUMERS[GUID]..','
+    end
+    if WIREINSYS[GUID] then
+        str = str..'所属系统:'..WIREINSYS[GUID]..','
+    end
+    str = str..'\n'
+    return str
+end
+
+--[[ 显示全局电路信息 ]]--
+_G.ShowLogicInfo = function()
+    local str = '全局导线信息:\n'
+    for k, v in pairs(SYSINFO) do
+        str = str..'信号线集合['..tostring(k)..']:'
+        str = str..'机器:'
+        for kk, vv in pairs(v.machines) do
+            str = str..tostring(vv)..','
+        end
+        str = str..'\n          信号线:'
+        for kk, vv in pairs(v.wires) do
+            str = str..tostring(vv)..','
+        end
+        str = str..'\n          输入:'
+        for kk, vv in pairs(v.inputs) do
+            str = str..tostring(vv)..','
+        end
+        str = str..'\n          输出:'
+        for kk, vv in pairs(v.outputs) do
+            str = str..tostring(vv)..','
+        end
+        str = str..'\n'
+    end
+    return str
+end
+
+_G.LogicWireDeployed = wireDeployed
+_G.LogicWireRemoved = wireRemoved

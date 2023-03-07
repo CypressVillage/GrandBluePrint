@@ -99,7 +99,7 @@ local function getLinkMutiSys(node)
             end
         end
     end
-    dbg('连接的系统个数：'..tostring(getTableSize(rtnID)))
+    dbg('连接的系统个数：'..tostring(table.size(rtnID)))
     dbg('<<获取连接了几个系统')
     return rtnID
 end
@@ -202,7 +202,7 @@ _G.RefreshElectricSys = function(obj) dbg('>>开始更新电路，id为'..tostri
     if obj:HasTag('wire') then
         local linkedSysID = getLinkMutiSys(obj)
         -- 把连接的系统全部合并
-        if getTableSize(linkedSysID) ~= 0 then dbg('找到了'..tostring(getTableSize(linkedSysID))..'个连接的系统')
+        if table.size(linkedSysID) ~= 0 then dbg('找到了'..tostring(table.size(linkedSysID))..'个连接的系统')
             local newSysID = mergeSysByID(linkedSysID)
 
             table.insert(ELECTRIC_SYS[newSysID].wires, obj.GUID) -- 别忘了把自己注册进去
@@ -217,7 +217,7 @@ _G.RefreshElectricSys = function(obj) dbg('>>开始更新电路，id为'..tostri
                     table.insert(ELECTRIC_SYS[newSysID].consumers, v)
                 end
             end
-            dbg(ShowTable(ELECTRIC_SYS))
+            dbg(table.toStr(ELECTRIC_SYS))
             LINK_ACTIONS_BY_ID(id)
         else dbg('没有找到系统')
             RegistEleSystembyWire(obj)

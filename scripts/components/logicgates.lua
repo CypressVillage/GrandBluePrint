@@ -5,4 +5,4 @@ local logicGates = Class(function(self, inst)
     self.logicfn = nil
 end
 
-function logicGates:logicfn(ninput, ...)
+function logicGates:logicfn(ninput, ...) end

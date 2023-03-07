@@ -213,7 +213,7 @@ _G.ShowWireInfo = function(GUID)
     if WIREINSYS[GUID] then
         str = str..'所属系统:'..WIREINSYS[GUID]..','
     end
-    -- str = str..'\n'
+    str = str..'\n'
     return str
 end
 
@@ -234,7 +234,7 @@ _G.ShowElecInfo = function()
         for kk, vv in pairs(v.consumers) do
             str = str..tostring(vv)..'('..vv.prefab..'),'
         end
-        -- str = str..'\n'
+        str = str..'\n'
     end
     return str
 end
