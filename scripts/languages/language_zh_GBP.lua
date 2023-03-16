@@ -47,7 +47,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.COMPUTER = '难以置信他会出现'
 STRINGS.RECIPE_DESC.COMPUTER = '人类最伟大的发明之一'
 
 STRINGS.NAMES.TECHCARRIER = '宝贵的资料'
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHCARRIER = function (tectree)
+local function listTechTree(tectree)
     local rtn = '这份资料里记载了\n'
     for name, val in pairs(tectree) do
         if val and val ~= 0 then
@@ -56,6 +56,7 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHCARRIER = function (tectree)
     end
     return rtn
 end
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHCARRIER = listTechTree
 
 STRINGS.NAMES.TECHSCANNER = '科技扫描仪'
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHSCANNER = '科学无国界，不是吗'
@@ -86,3 +87,5 @@ STRINGS.RECIPE_DESC.BATTERYMED = '支撑你的电路'
 STRINGS.NAMES.BATTERYLG = '大型电池'
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BATTERYLG = '希望它还有电'
 STRINGS.RECIPE_DESC.BATTERYLG = '支撑你的电路'
+
+STRINGS.NAMES.PIN = '引脚'

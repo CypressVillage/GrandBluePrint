@@ -67,7 +67,7 @@ local function regiWire(wire)
         POWERORCONSUMERS[id] = elements[1].GUID
     end
 
-    local neighbors = TheSim:FindEntities(x,0,z, 1, {'wire'})
+    local neighbors = TheSim:FindEntities(x,0,z, 1, {'electricwire'})
     for i = 1, #neighbors do
         local nGUID = neighbors[i].GUID
         local nx, ny, nz = neighbors[i].Transform:GetWorldPosition()
@@ -112,11 +112,11 @@ end
 --[[ 注册导线，新建系统，合并系统（如果有的话）]]--
 local function wireDeployed(wire)
     local id = regiWire(wire)
-    
+
     NEWSYSID = NEWSYSID+1
     local newSysID = NEWSYSID
     WIREINSYS[id] = newSysID
-    
+
     SYSINFO[newSysID] = { -- 不管有没有连接的系统都要新建一个系统
         wires = {
             wire.GUID,
@@ -124,14 +124,6 @@ local function wireDeployed(wire)
         consumers = {},
         powers = {},
     }
-
-    if POWERORCONSUMERS[id] then -- 如果连接了电器就加入
-        if Ents[POWERORCONSUMERS[id]]:HasTag('power') then
-            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[id])
-        elseif Ents[POWERORCONSUMERS[id]]:HasTag('consumer') then
-            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id])
-        end
-    end
 
     local linkt = getLinkSys(wire)
     if linkt then -- 如果连接了其他就合并过来
@@ -151,7 +143,15 @@ local function wireDeployed(wire)
             end
         end
     end
-    dbg(ShowElecInfo())
+
+    if POWERORCONSUMERS[id] then -- 如果连接了电器就加入，这里判断有没有重复的
+        if Ents[POWERORCONSUMERS[id]]:HasTag('power') and not table.indexof(SYSINFO[newSysID].powers, POWERORCONSUMERS[id]) then
+            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[id])
+        elseif Ents[POWERORCONSUMERS[id]]:HasTag('consumer') and not table.indexof(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id]) then
+            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id])
+        end
+    end
+    -- dbg(ShowElecInfo())
 end
 
 --[[ 注销系统，重新注册系统中的导线 ]]--
@@ -241,7 +241,7 @@ end
 
 _G.OnDeployEleAppliance = function(obj)
     local x, y, z = obj.Transform:GetWorldPosition()
-    local elements = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    local elements = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
     if elements[1] then
         local id = elements[1].GUID
         local sysID = WIREINSYS[id]
@@ -255,7 +255,7 @@ end
 
 _G.OnRemoveEleAppliance = function(obj)
     local x, y, z = obj.Transform:GetWorldPosition()
-    local elements = TheSim:FindEntities(x,0,z, 0.5, {'wire'})
+    local elements = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
     if elements[1] then
         local id = elements[1].GUID
         local sysID = WIREINSYS[id]

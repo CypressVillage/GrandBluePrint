@@ -1,10 +1,13 @@
-local modname = modname or 'log'
-local LOGPATH = '../mods/'..modname..'/log/' or 'log/'
-local LOGPATH = 'log/' -- 不开游戏测试用这个
+local _G = GLOBAL
+local MODROOT = MODROOT or ''
+local LOGPATH = MODROOT..'log/'
 
 local LOGPS1 = '[GBP LOG]: '
-local LOGPS2 = '[GBP ERROR]: '
+local LOGPS2 = '[GBP DEBUG]: '
+local LOGPS3 = '[GBP ERROR]: '
 local file
+local first = true
+_G.DEBUG_GBP = true
 
 -- 获取时间戳
 local function getTimestamp()
@@ -15,12 +18,26 @@ end
 
 -- 打开日志文件
 local function logopen(typ)
-    if file ~= nil then logclose() end
-
     typ = typ or ''
     local fname = LOGPATH..typ..'log_'..getTimestamp()..'.txt'
-    file = io.open(fname, 'a')
-    if file == nil then print('[GBP ERROR]: log file open failed') end
+
+    if first then
+        local file = io.open(fname,"w")
+        file:close()
+        file = nil 
+        first = false
+    end
+    local res ,re
+    file,res = io.open(fname,"r")
+    if file then
+        re = file:read('*a')
+        file:close()
+    end
+
+    file = io.open(fname,"w")
+    if re then
+        file:write(re)
+    end
 end
 _G.logopen = logopen
 
@@ -36,23 +53,15 @@ local function log(str, typ)
 end
 _G.log = log
 
-logopen()
-
-
-_G.DEBUG_GBP = true
-
--- -- 计算时间开销
--- _G.tim1 = os.clock
--- _G.tim2 = function (str)
---     return string.format(str..'total time: %.2fms\n', (os.clock() - _G.tim1())*1000)
--- end
 
 -- 全局DEBUG
 _G.dbg = function(str)
-    local rtn = '[GBP DEBUG] '..str
-    print(rtn)
     if DEBUG_GBP then
-        c_announce(rtn)
+        _G.c_announce(LOGPS2..str)
+        log(str, LOGPS2)
     end
+    print(LOGPS2..str)
 end
 
+-- 加载时打开日志文件
+logopen()

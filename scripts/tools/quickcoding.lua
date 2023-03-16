@@ -1,5 +1,6 @@
 local _G = GLOBAL
 
+
 --[ 地图图标注册 ]--  >>from Legion<<
 _G.RegistMiniMapImage_legion = function(filename, fileaddresspre)
     local fileaddresscut = (fileaddresspre or "images/map_icons/")..filename
