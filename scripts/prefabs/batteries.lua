@@ -133,7 +133,10 @@ local function MakeBattery(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs), MakePlacer(data.name.."_placer", data.name, data.name, "off", nil, nil, nil, 1.5)
+    return unpack{
+        Prefab(data.name, fn, assets, prefabs),
+        MakePlacer(data.name.."_placer", data.name, data.name, "off", nil, nil, nil, 1.5)
+    }
 end
 
 local batteryprefabs = {}

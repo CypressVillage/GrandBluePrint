@@ -20,7 +20,7 @@ local function MakeChip(data)
         inst.entity:AddNetwork()
 
         inst.AnimState:SetBank("pin")
-        inst.AnimState:SetBuild(name_base)
+        inst.AnimState:SetBuild('pin')
         inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
         inst.AnimState:SetLayer(LAYER_BACKGROUND)
         inst.AnimState:SetFinalOffset(1)
@@ -32,8 +32,6 @@ local function MakeChip(data)
     end
 
     local function createPins(x, z, rot)
-
-    end
 
     end
 
@@ -129,7 +127,11 @@ local function MakeChip(data)
         return inst
     end
 
-    return Prefab(data.name, commonfn, assets, prefabs), Prefab(data.name..'_item', itemfn, assets, prefabs), MakePlacer(data.name..'_placer', data.package, data.package, "idle")
+    return unpack{
+        Prefab(data.name, commonfn, assets, prefabs),
+        Prefab(data.name..'_item', itemfn, assets, prefabs),
+        MakePlacer(data.name..'_placer', data.package, data.package, "idle"),
+    }
 end
 
 _G.CHIPINFO = {

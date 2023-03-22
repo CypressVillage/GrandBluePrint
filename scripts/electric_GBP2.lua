@@ -51,9 +51,19 @@ _G.getLinkedThings = function(GUID)
     }
 end
 
+--[[ 接口，获取用电器连接的第一根导线 ]]--
+_G.getfirstWire = function(GUID)
+    return table.indexof(POWERORCONSUMERS, GUID)
+end
+
 --[[ 接口，获取导线所在系统 ]]--
 _G.wireInSys = function(GUID)
     return WIREINSYS[GUID]
+end
+
+-- [[ 接口，获取系统信息 ]]--
+_G.getsysThings = function(sysID)
+    return SYSINFO[sysID]
 end
 
 --[[ 注册一个新导线的一切，返回ID ]]--

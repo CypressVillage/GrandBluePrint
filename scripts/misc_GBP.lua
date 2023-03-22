@@ -4,6 +4,25 @@ local _G = GLOBAL
     游戏杂项修改
 ]]--
 
+-- 为机器开关添加连接进电路的限制
+AddComponentPostInit('machine', function(self)
+    local oldturnonfn = self.turnofffn
+    self.turnonfn = function(inst)
+        -- 检查只对拥有elecmachine组件的对象生效
+        local elecm = inst.components.elecmachine
+        if not elecm then
+            return oldturnonfn(inst)
+        else
+            if elecm:check() then
+                return oldturnonfn(inst)
+            end
+        end
+    end
+    self.turnofffn = function(inst)
+        EnableHum(inst, false)
+        EnableLight(inst, false)
+    end
+end)
 
 -- 可靠的胶布可以修补烂电线
 AddPrefabPostInit('sewing_tape', function(inst)
@@ -63,6 +82,8 @@ AddPrefabPostInit('winona_battery_low', function(inst)
     end
     inst.components.machine.cooldowntime = 0
 end)
+
+-- AddPrefabPostInit('firesuppressor', )
 
 -- 清洁扫把对自己施法改变自己的皮肤
 AddPrefabPostInit('reskin_tool', function(inst)

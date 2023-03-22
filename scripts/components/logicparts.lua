@@ -1,6 +1,6 @@
 --[[
     这里实现一个电子元件的功能
-]]
+]]--
 local logicParts = Class(function(self, inst)
     self.inst = inst
     -- self.inst:AddTag("logicgates")
