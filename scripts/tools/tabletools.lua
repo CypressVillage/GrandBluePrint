@@ -59,13 +59,15 @@ table.size = function(tab)
     return num
 end
 
--- -- 删除表中的重复元素，能处理空表
--- table.delRepeat = function(tab)
---     local rtn = {}
---     for _, v in pairs(tab) do
---         if 0 ~= _G.findIndex(v, rtn) then
---             rtn[#rtn+1] = v
---         end
---     end
---     return rtn
--- end
+-- 删除表中的重复元素，能处理空表
+table.unique = function(t)
+    local hash = {}
+    local res = {}
+    for _,v in ipairs(t) do
+        if (not hash[v]) then
+            res[#res+1] = v
+            hash[v] = true
+        end
+    end
+    return res
+end

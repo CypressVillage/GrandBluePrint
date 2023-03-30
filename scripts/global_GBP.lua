@@ -1,9 +1,14 @@
 local _G = GLOBAL
+_G.GBP = {}
+
+setmetatable(_G.GBP, {__index = _G})
+setfenv(1, _G.GBP)
+
 
 --[[
     CHIPS
 --]]
-local CHIPPACKAGES = {
+CHIPPACKAGES = {
     ['1X2'] = {
         {num = 0, dx = 0, dy = 0},
         {num = 1, dx = 0, dy = 1},
@@ -26,7 +31,7 @@ local CHIPPACKAGES = {
     },
 }
 
-_G.CHIPINFO = {
+CHIPINFO = {
     {
         name = 'convertor',
         package = '8x2',

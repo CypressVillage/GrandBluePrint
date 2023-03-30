@@ -122,7 +122,7 @@ local function MakeBattery(data)
         inst.components.battery.canbeused = CanBeUsedAsBattery
         inst.components.battery.onused = OnUsedAsBattery
 
-        MakeSnowCovered(inst)
+        -- MakeSnowCovered(inst)
 
         inst.OnSave = onsave
         inst.OnLoad = onload

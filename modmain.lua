@@ -1,6 +1,5 @@
 GLOBAL.setmetatable(env, { __index = function(t, k) return GLOBAL.rawget(GLOBAL, k) end })
 local _G = GLOBAL
-_G.GBP = {}
 
 PrefabFiles = {
     'tridprinter',

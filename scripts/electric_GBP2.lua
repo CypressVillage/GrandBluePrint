@@ -135,10 +135,18 @@ local function wireDeployed(wire)
         powers = {},
     }
 
+    if POWERORCONSUMERS[id] then -- 如果连接了电器就加入
+        if Ents[POWERORCONSUMERS[id]]:HasTag('power') then
+            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[id])
+        elseif Ents[POWERORCONSUMERS[id]]:HasTag('consumer') then
+            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id])
+        end
+    end
+
     local linkt = getLinkSys(wire)
     if linkt then -- 如果连接了其他就合并过来
         for i, oldsysID in pairs(linkt) do
-            if SYSINFO[oldsysID] then -- 加这层判断是因为有可能合并过程中已经被移除了
+            if SYSINFO[oldsysID] then -- 加这层判断是因为有可能合并过程中已经被移除了，其实是getLinkSys可能有重复元素的锅
                 for _, itemID in pairs(SYSINFO[oldsysID].wires) do
                     table.insert(SYSINFO[newSysID].wires, itemID)
                     WIREINSYS[itemID] = newSysID
@@ -154,14 +162,10 @@ local function wireDeployed(wire)
         end
     end
 
-    if POWERORCONSUMERS[id] then -- 如果连接了电器就加入，这里判断有没有重复的
-        if Ents[POWERORCONSUMERS[id]]:HasTag('power') and not table.indexof(SYSINFO[newSysID].powers, POWERORCONSUMERS[id]) then
-            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[id])
-        elseif Ents[POWERORCONSUMERS[id]]:HasTag('consumer') and not table.indexof(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id]) then
-            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[id])
-        end
-    end
-    -- dbg(ShowElecInfo())
+    SYSINFO[newSysID].powers = table.unique(SYSINFO[newSysID].powers)
+    SYSINFO[newSysID].consumers = table.unique(SYSINFO[newSysID].consumers)
+
+    dbg(ShowElecInfo())
 end
 
 --[[ 注销系统，重新注册系统中的导线 ]]--
@@ -169,7 +173,7 @@ local function removeWire(wire)
     local id = wire.GUID
     local sysID = WIREINSYS[id]
     local wire2reset = {}
-    
+
     if LINK_L[id] then
         LINK_R[LINK_L[id]] = nil
     end
@@ -185,14 +189,13 @@ local function removeWire(wire)
     if POWERORCONSUMERS[id] then
         POWERORCONSUMERS[id] = nil
     end
-    
+
     for _, itemID in pairs(SYSINFO[sysID].wires) do
         if itemID ~= id and Ents[itemID] then
             table.insert(wire2reset, itemID) -- 记录需要重新注册的导线
             WIREINSYS[itemID] = nil
         end
     end
-    -- table.remove(GUIDT, table.indexof(GUIDT, id))
     WIREINSYS[id] = nil
     SYSINFO[sysID] = nil
 
@@ -254,6 +257,8 @@ _G.OnDeployEleAppliance = function(obj)
     local elements = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
     if elements[1] then
         local id = elements[1].GUID
+        POWERORCONSUMERS[id] = obj.GUID
+
         local sysID = WIREINSYS[id]
         if obj:HasTag('power') then
             table.insert(SYSINFO[sysID].powers, obj.GUID)
@@ -268,6 +273,10 @@ _G.OnRemoveEleAppliance = function(obj)
     local elements = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
     if elements[1] then
         local id = elements[1].GUID
+        if POWERORCONSUMERS[id] == obj.GUID then
+            POWERORCONSUMERS[id] = nil
+        end
+
         local sysID = WIREINSYS[id]
         if obj:HasTag('power') then
             table.remove(SYSINFO[sysID].powers, table.indexof(SYSINFO[sysID].powers, obj.GUID))
