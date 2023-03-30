@@ -4,6 +4,10 @@ local _G = GLOBAL
     游戏杂项修改
 ]]--
 
+AddPrefabPostInit('researchlab1', function(inst)
+    inst:AddTag('power')
+end)
+
 -- 为机器开关添加连接进电路的限制
 AddComponentPostInit('machine', function(self)
     local oldturnonfn = self.turnofffn

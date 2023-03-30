@@ -56,9 +56,9 @@ local function MakeWire(data)
 
         if isexpand then
             for i, v in pairs(linkThings) do
-                -- if i ~= 'other' then 
-                refreshState(Ents[v], false)
-                -- ends
+                if i ~= 'other' then 
+                    refreshState(Ents[v], false)
+                end
             end
         end
     end
@@ -208,16 +208,10 @@ local function MakeWire(data)
 
         inst:AddComponent("deployable")
         inst.components.deployable.ondeploy = ondeploywire
-        -- inst.components.deployable:SetDeployMode(DEPLOYMODE.WALL)
         inst.components.deployable:SetDeploySpacing(DEPLOYSPACING.NONE)
-
-        return inst
-    end
-
-    local function postinitfn(inst)
-        local oldtestfn = inst.components.placer.testfn
-        inst.components.placer.testfn = function(inst, pt, mouseover, deployer)
-            local oldresult = oldtestfn(inst, pt, mouseover, deployer)
+        inst.components.deployable:SetDeployMode(DEPLOYMODE.CUSTOM)
+        inst.components.deployable._custom_candeploy_fn = function(inst, pt, mouseover, deployer, rot)
+            local oldresult = TheWorld.Map:CanDeployAtPoint(pt, inst, mouseover)
             local x = math.floor(pt.x) + .5
             local z = math.floor(pt.z) + .5
             local ents = TheSim:FindEntities(x, 0, z, 0.1, {}, {  'player', 'FX' }, { 'wire', 'logicparts' })
@@ -226,9 +220,11 @@ local function MakeWire(data)
             end
             return true and oldresult
         end
+
+        return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs), Prefab  (data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, postinitfn)
+    return Prefab(data.name, fn, assets, prefabs), Prefab  (data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, nil)
 end
 
 local wireprefabs = {}
