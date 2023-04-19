@@ -2,11 +2,11 @@ GLOBAL.setmetatable(env, { __index = function(t, k) return GLOBAL.rawget(GLOBAL,
 local _G = GLOBAL
 
 PrefabFiles = {
-    'tridprinter',
+    'batteries',
     'computer',
     'techtools',
+    'tridprinter',
     'wires',
-    'batteries'
 }
 
 Assets = {}
