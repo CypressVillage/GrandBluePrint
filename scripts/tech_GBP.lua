@@ -2,7 +2,7 @@ local _G = GLOBAL
 
 --[[
     添加自定义科技
-]]--
+]]
 
 -- 注册物品科技树，表示有这种科技
 local TechTree = require('techtree')
@@ -18,7 +18,7 @@ _G.TECH.ELECTRICENGINEERING_ONE = { ELECTRICENGINEERING = 1 }
 _G.TECH.ELECTRICENGINEERING_TWO = { ELECTRICENGINEERING = 2 }
 
 -- 解锁等级中加入自己的部分
-for k,v in pairs(TUNING.PROTOTYPER_TREES) do
+for _, v in pairs(TUNING.PROTOTYPER_TREES) do
     v.COMPUTERSCIENCE = 0
     v.ELECTRICENGINEERING = 0
 end
@@ -72,6 +72,18 @@ AddRecipeFilter({
 })
 
 AddRecipeFilter({
+    name = 'SHADOWFORGING',
+    atlas = "images/crafting_menu_icons.xml",
+    image = "station_shadow_forge.tex"
+})
+
+AddRecipeFilter({
+    name = 'LUNARFORGING',
+    atlas = "images/crafting_menu_icons.xml",
+    image = "station_lunar_forge.tex"
+})
+
+AddRecipeFilter({
     name = 'CARTOGRAPHY',
     atlas = "images/crafting_menu_icons.xml",
     image = "station_cartography.tex"
@@ -112,6 +124,12 @@ for _, recipe in _G.pairsByKeys(AllRecipes) do
     end
     if recipe.level.CELESTIAL ~= 0 and recipe.level.CELESTIAL <= 3 then
         AddRecipeToFilter(recipe.name, 'CELESTIAL')
+    end
+    if recipe.level.SHADOWFORGING ~= 0 then
+        AddRecipeToFilter(recipe.name, 'SHADOWFORGING')
+    end
+    if recipe.level.LUNARFORGING ~= 0 then
+        AddRecipeToFilter(recipe.name, 'LUNARFORGING')
     end
     if recipe.level.CARTOGRAPHY ~= 0 then
         AddRecipeToFilter(recipe.name, 'CARTOGRAPHY')

@@ -92,7 +92,7 @@ end)
 -- 清洁扫把对自己施法改变自己的皮肤
 AddPrefabPostInit('reskin_tool', function(inst)
     inst:AddTag('castfrominventory')
-    
+
     local oldspell = inst.components.spellcaster.spell
     inst.components.spellcaster:SetSpellFn(function(tool, target, pos, caster)
         local newtarget = target or inst
@@ -112,7 +112,7 @@ AddPrefabPostInit('reskin_tool', function(inst)
                 end
             end)
         end
-        
+
         if oldonspellcast then
             local oldonspellcastrtn = oldonspellcast(tool, target, pos, caster)
             if oldonspellcastrtn then

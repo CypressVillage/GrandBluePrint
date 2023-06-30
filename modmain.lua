@@ -9,7 +9,7 @@ PrefabFiles = {
     'wires',
 }
 
-Assets = {}
+Assets = {} -- Recipes_GBP.lua
 
 _G.CONFIGS_GBP = {
     ALLPROTOTYPERUPGRADE = GetModConfigData('allPrototyperUpgrade'),

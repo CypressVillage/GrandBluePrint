@@ -1,3 +1,8 @@
+--[==[ 工具函数库
+    _G.pairsByKeys(t)
+    table.tostr
+]==]
+
 local _G = GLOBAL
 
 -- 顺序遍历表

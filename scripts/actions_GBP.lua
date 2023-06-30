@@ -6,7 +6,13 @@ local SCAN_TECH = Action({ priority = 2 })
 SCAN_TECH.id = 'SCAN_TECH'
 SCAN_TECH.str = STRINGS.ACTIONS_GBP.SCAN_TECH
 SCAN_TECH.fn = function(act)
-    act.target.components.techscan:ScanTech(act)
+    -- act.target.components.techscan:ScanTech(act)
+    local scanner = act.doer.components.inventory:RemoveItem(act.invobject)
+    local techInfo = act.target.components.prototyper.trees
+    local tecpaper = SpawnPrefab('techcarrier')
+    tecpaper.techinfo = techInfo
+    tecpaper.components.inspectable:SetDescription(STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHCARRIER(techInfo))
+    act.doer.components.inventory:GiveItem(tecpaper)
     return true
 end
 AddAction(SCAN_TECH)
