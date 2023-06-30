@@ -6,13 +6,7 @@ local SCAN_TECH = Action({ priority = 2 })
 SCAN_TECH.id = 'SCAN_TECH'
 SCAN_TECH.str = STRINGS.ACTIONS_GBP.SCAN_TECH
 SCAN_TECH.fn = function(act)
-    local scanner = act.doer.components.inventory:RemoveItem(act.invobject)
-    local techInfo = act.target.components.prototyper.trees
-    local tecpaper = SpawnPrefab('techcarrier')
-    tecpaper.techinfo = techInfo
-    tecpaper.components.inspectable:SetDescription(STRINGS.CHARACTERS.GENERIC.DESCRIBE.TECHCARRIER(techInfo))
-    act.doer.components.inventory:GiveItem(tecpaper)
-
+    act.target.components.techscan:ScanTech(act)
     return true
 end
 AddAction(SCAN_TECH)
@@ -34,9 +28,13 @@ local REPAIR_BROKEN_WIRE = Action({ priority = 2 })
 REPAIR_BROKEN_WIRE.id = 'REPAIR_BROKEN_WIRE'
 REPAIR_BROKEN_WIRE.str = STRINGS.ACTIONS_GBP.REPAIR_BROKEN_WIRE
 REPAIR_BROKEN_WIRE.fn = function(act)
-    act.doer.components.inventory:ConsumeByName(act.invobject.prefab, 1)
-    act.doer.components.inventory:ConsumeByName(act.target.prefab, 1)
-    
+    -- local slot = act.doer.components.inventory:GetItemSlot(act.target)
+    act.doer.components.inventory:tryconsume(act.target, 1)
+    act.doer.components.inventory:tryconsume(act.invobject, 1)
+
+    -- act.doer.components.inventory:ConsumeByName(act.invobject.prefab, 1)
+    -- act.doer.components.inventory:ConsumeByName(act.target.prefab, 1)
+
 
     local wire = SpawnPrefab('electricwire_item')
     act.doer.components.inventory:GiveItem(wire)
