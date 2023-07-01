@@ -19,9 +19,9 @@
 local _G = GLOBAL
 local NWIRE = _G.CONFIGS_GBP.NWIRE
 
-GBP_ELECTRIC = {}
-setmetatable(GBP_ELECTRIC, {__index = _G})
-setfenv(1, GBP_ELECTRIC)
+-- GBP_ELECTRIC = {}
+-- setmetatable(GBP_ELECTRIC, {__index = _G})
+-- setfenv(1, GBP_ELECTRIC)
 
 
 -- 导线的所有信息，索引都是GUID
@@ -293,4 +293,4 @@ end
 _G.WireDeployed = wireDeployed
 _G.wireRemoved = removeWire
 
-setfenv(1, _G)
+-- setfenv(1, _G)

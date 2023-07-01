@@ -158,7 +158,9 @@ if _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE then
         'seafaring_prototyper',
         'tacklestation',
         'cartographydesk',
-        'madscience_lab'
+        'madscience_lab',
+        -- 'shadow_forge',为什么不行？待解决
+        -- 'lunar_forge',
     }
     for _, v in pairs(prototyperBuildings) do
         AddPrefabPostInit(v, function(inst)
