@@ -16,7 +16,7 @@ local function tecscannerfn()
     inst.AnimState:SetBank("wagstaff_tools_all")
     inst.AnimState:SetBuild("wagstaff_tools")
     inst.AnimState:PlayAnimation("multitool")
-    inst.AnimState:SetErosionParams(0, -0.136, -1.0)
+    -- inst.AnimState:SetErosionParams(0, -0.136, -1.0) -- 侵蚀参数
 
     inst.entity:SetPristine()
 

@@ -44,7 +44,7 @@ table.tostr = function (t, level, newline, pre, tab, lv)
     return rtn
 end
 
--- 判断元素是否在表中，返回位置，返回nil表示没找到
+-- 返回元素在表中的位置，返回nil表示没找到
 table.indexof = function(table, val)
     for id, v in pairs(table) do
         if val == v then return id end

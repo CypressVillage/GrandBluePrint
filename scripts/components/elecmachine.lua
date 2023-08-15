@@ -5,8 +5,8 @@ local _G = GLOBAL
 
 local function check(self, inst)
     local wire = _G.getfirstWire(inst.GUID)
-    local sysID = _G.wireInSys(wire)
-    local powers = _G.getsysThings(sysID)
+    local sysID = _G.getSysID(wire)
+    local powers = _G.getSysInfo(sysID)
     if powers then
         return true
     end

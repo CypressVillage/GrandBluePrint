@@ -28,7 +28,7 @@ local function MakeWire(data)
 
         -- RemoveObjFromSys(inst)
         if data.type == 'electric' then
-            _G.wireRemoved(inst)
+            _G.WireRemoved(inst)
         elseif data.type == 'logic' then
             _G.LogicWireRemoved(inst)
         end
@@ -224,7 +224,7 @@ local function MakeWire(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs), Prefab  (data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, nil)
+    return Prefab(data.name, fn, assets, prefabs), Prefab(data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, nil)
 end
 
 local wireprefabs = {}
