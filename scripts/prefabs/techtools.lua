@@ -28,7 +28,7 @@ local function tecscannerfn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.atlasname = 'images/inventoryimages2.xml'
+    inst.components.inventoryitem.atlasname = 'images/inventoryimages3.xml'
     inst.components.inventoryitem.imagename = 'wagstaff_tool_4'
 
     inst:AddComponent('techscan')

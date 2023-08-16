@@ -65,7 +65,7 @@ local Recipes_GBP = {
         },
         TECH.ELECTRICENGINEERING_ONE,
         {
-            atlas = 'images/inventoryimages2.xml',
+            atlas = 'images/inventoryimages3.xml',
             image = 'wagstaff_tool_4.tex',
             nounlock = true
         },
