@@ -64,7 +64,7 @@ table.size = function(tab)
     return num
 end
 
--- 删除表中的重复元素，能处理空表
+-- 返回删除了重复元素的新表，能处理空表
 table.unique = function(t)
     local hash = {}
     local res = {}

@@ -113,7 +113,11 @@ local function MakeWire(data)
     end
 
     local function onload(inst, data)
-        _G.WireDeployed(inst)
+        if data.type == 'electric' then
+            _G.WireDeployed(wire)
+        elseif data.type == 'logic' then
+            _G.LogicWireDeployed(wire)
+        end
         refreshState(inst, true)
         -- refreshState(inst, true)
         -- RefreshElectricSys(inst)
