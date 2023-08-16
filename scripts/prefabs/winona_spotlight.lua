@@ -1,5 +1,7 @@
 --[[
-    这个文件的改动是将EnableLight和EnableHum函数的定义变成全局的，这样就可以在其他文件中调用了
+    这个文件采用了覆盖式写法，改动如下：
+    - 将EnableLight和EnableHum函数的定义变成全局的，这样就可以在其他文件中调用了
+    - 添加注释方便理解
 ]]
 
 require("prefabutil")
@@ -178,6 +180,7 @@ end
 
 local GLOBAL_TARGETS = {}
 
+-- 设置聚光灯追踪的对象
 local function SetTarget(inst, target)
     if inst._target ~= target then
         if inst._target ~= nil then
@@ -387,6 +390,7 @@ local function OnStartHum(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/spot_light/on_hum_LP", "humloop")
 end
 
+-- 貌似只和声音有关系？灯开启的时候播放音乐？
 function EnableHum(inst, enable)
     if enable then
         if inst._humtask == nil then
@@ -400,6 +404,7 @@ function EnableHum(inst, enable)
     end
 end
 
+-- 打开灯和关闭灯
 function EnableLight(inst, enable)
     if not enable then
         if inst._powertask ~= nil then
@@ -451,7 +456,7 @@ local function OnEntityWake(inst)
 end
 
 --------------------------------------------------------------------------
-
+-- 建造第二步：尝试链接发电机
 local function OnBuilt2(inst)
     if inst.components.workable:CanBeWorked() then
         inst:RemoveTag("NOCLICK")
@@ -460,7 +465,7 @@ local function OnBuilt2(inst)
         end
     end
 end
-
+-- 建造第三步：播放动画完毕
 local function OnBuilt3(inst)
     inst:RemoveEventCallback("animover", OnBuilt3)
     if inst.AnimState:IsCurrentAnimation("place") then
@@ -468,7 +473,7 @@ local function OnBuilt3(inst)
         inst._headinst.AnimState:PlayAnimation("idle", true)
     end
 end
-
+-- 建造第一步：播放建造动画
 local function OnBuilt(inst)--, data)
     if inst._inittask ~= nil then
         inst._inittask:Cancel()
@@ -486,7 +491,7 @@ local function OnBuilt(inst)--, data)
 end
 
 --------------------------------------------------------------------------
-
+-- 被敲了
 local function OnWorked(inst)
     inst.AnimState:PlayAnimation("hit")
     inst.AnimState:PushAnimation("idle", true)
@@ -495,7 +500,7 @@ local function OnWorked(inst)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/catapult/hit")
     inst._lightoffset:set(7)
 end
-
+-- 敲完了
 local function OnWorkFinished(inst)
     if inst._inittask ~= nil then
         inst._inittask:Cancel()
@@ -526,7 +531,7 @@ local function OnWorkFinished(inst)
 
     inst:DoTaskInTime(2, ErodeAway)
 end
-
+-- 敲烧毁的
 local function OnWorkedBurnt(inst)
     inst.components.lootdropper:DropLoot()
     local fx = SpawnPrefab("collapse_small")
@@ -534,7 +539,7 @@ local function OnWorkedBurnt(inst)
     fx:SetMaterial("wood")
     inst:Remove()
 end
-
+-- 烧着呢
 local function OnBurnt(inst)
     DefaultBurntStructureFn(inst)
 
@@ -565,7 +570,7 @@ local function GetStatus(inst)
         or (inst._powertask == nil and "OFF")
         or nil
 end
-
+-- 我只在这里找到了EnableLight(inst, true)，说明这里就是控制开灯的代码
 local function AddBatteryPower(inst, power)
     local remaining = inst._powertask ~= nil and GetTaskRemaining(inst._powertask) or 0
     if power > remaining then

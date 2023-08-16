@@ -1,6 +1,6 @@
 --[[
     在这里定义一个电路系统。。。
-]]--
+]]
 
 local _G = GLOBAL
 -- local WORLD_MAX_RANGE = 9999 -- 为了寻找全图的电源

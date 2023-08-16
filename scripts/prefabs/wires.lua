@@ -5,7 +5,7 @@
     也许需要强加载？
     md，好像为了能正常显示我得做8个面，而电线这个东西有9种连接状态，听起来就很刺激
     longfei教程里有贴靠地面的函数，电线素材就不用进一步加工了👍
-]]--
+]]
 
 local function MakeWire(data)
     local assets =

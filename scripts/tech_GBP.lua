@@ -58,7 +58,7 @@ AddPrototyperDef(
 --[[
     为新版制作栏添加远古、天体等常驻选项
     其中制作栏标签要在STRINGS.UI.CRAFTING_FILTERS里定义
-]]--
+]]
 AddRecipeFilter({
     name = 'ANCIENT',
     atlas = "images/crafting_menu_icons.xml",
@@ -147,7 +147,7 @@ end
 
 --[[
     升级科技是否兼容所有制作站
-]]--
+]]
 if _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE then
     local prototyperBuildings = {
         'researchlab',

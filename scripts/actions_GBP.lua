@@ -1,7 +1,7 @@
 local _G = GLOBAL
 --[[
     扫描科技
-]]--
+]]
 local SCAN_TECH = Action({ priority = 2 })
 SCAN_TECH.id = 'SCAN_TECH'
 SCAN_TECH.str = STRINGS.ACTIONS_GBP.SCAN_TECH
@@ -29,7 +29,7 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.SCAN_TECH, "do
 
 --[[
     修补旧电线
-]]--
+]]
 local REPAIR_BROKEN_WIRE = Action({ priority = 2 })
 REPAIR_BROKEN_WIRE.id = 'REPAIR_BROKEN_WIRE'
 REPAIR_BROKEN_WIRE.str = STRINGS.ACTIONS_GBP.REPAIR_BROKEN_WIRE

@@ -126,7 +126,7 @@ local function wireDeployed(wire)
     -- dbg(_G.ShowLogicInfo())
 end
 
---[[ 注销系统，重新注册系统中的导线 ]]--
+--[[ 注销系统，重新注册系统中的导线 ]]
 local function wireRemoved(wire)
     local id = wire.GUID
     local sysID = WIREINSYS[id]
@@ -191,7 +191,7 @@ _G.ShowLogicWireInfo = function(GUID)
     return str
 end
 
---[[ 显示全局电路信息 ]]--
+--[[ 显示全局电路信息 ]]
 _G.ShowLogicInfo = function()
     local str = '全局导线信息:\n'
     for k, v in pairs(SYSINFO) do
