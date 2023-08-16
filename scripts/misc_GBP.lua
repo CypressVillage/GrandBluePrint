@@ -2,7 +2,7 @@ GLOBAL.setmetatable(env, { __index = function(t, k) return GLOBAL.rawget(GLOBAL,
 local _G = GLOBAL
 --[[
     游戏杂项修改
-]]--
+]]
 
 AddPrefabPostInit('researchlab1', function(inst)
     inst:AddTag('power')
@@ -22,10 +22,7 @@ AddComponentPostInit('machine', function(self)
             end
         end
     end
-    self.turnofffn = function(inst)
-        EnableHum(inst, false)
-        EnableLight(inst, false)
-    end
+
 end)
 
 -- 可靠的胶布可以修补烂电线
@@ -35,64 +32,60 @@ end)
 
 -- winona的聚光灯可以开启或关闭
 AddPrefabPostInit('winona_spotlight', function(inst)
-    inst:AddTag('consumer')
 
     inst:AddComponent('machine')
+    inst.components.machine.turnonfn = function(inst) 
+        inst.components.circuitnode:ConnectTo("engineeringbattery")
+    end
+    inst.components.machine.turnofffn = function(inst) 
+        inst.components.circuitnode:Disconnect()
+    end
 
-    inst.components.machine.turnonfn = function(inst)
-        if inst._lightdist:value() > 0 then
-            EnableHum(inst, true)
+    -- 为了防止自动开灯，在开灯的时候加一个判断
+    local oldAddBatteryPower = inst.AddBatteryPower
+    inst.AddBatteryPower = function(inst, power)
+        if not inst.components.machine.ison then
+            inst.components.machine:TurnOff()
+        else
+            oldAddBatteryPower(inst, power)
         end
-        EnableLight(inst, true)
     end
-    inst.components.machine.turnofffn = function(inst)
-        EnableHum(inst, false)
-        EnableLight(inst, false)
-    end
-    -- inst.components.maching.turnonfn = function (inst)
-    --     if not inst._wired then
-    --         inst._wired = true
-    --         inst.AnimState:ClearOverrideSymbol("wire")
-    --         if not POPULATING then
-    --             DoWireSparks(inst)
-    --         end
-    --     end
-    --     OnCircuitChanged(inst)
-    -- end
-    inst.components.machine.cooldowntime = 0
+
 end)
 
 -- winona的发电机可以开启或关闭
 AddPrefabPostInit('winona_battery_low', function(inst)
-    inst:AddTag('consumer')
+    -- inst:AddTag('consumer')
 
-    inst:AddComponent('machine')
+    -- inst:AddComponent('machine')
 
-    inst.components.machine.turnonfn = function(inst)
-        if not inst.components.fueled.consuming then
-            inst.components.fueled:StartConsuming()
-            -- BroadcastCircuitChanged(inst)
-            -- StartBattery(inst)
-        end
-        inst.SoundEmitter:PlaySound("dontstarve/common/together/battery/up")
-        if not inst:IsAsleep() then
-        --    StartIdleChargeSounds(inst)
-        --    StartSoundLoop(inst)
-        end
-    end
-    inst.components.machine.turnofffn = function(inst)
-        EnableHum(inst, false)
-        EnableLight(inst, false)
-    end
-    inst.components.machine.cooldowntime = 0
+    -- inst.components.machine.turnonfn = function(inst)
+    --     if not inst.components.fueled.consuming then
+    --         inst.components.fueled:StartConsuming()
+    --         -- BroadcastCircuitChanged(inst)
+    --         -- StartBattery(inst)
+    --     end
+    --     inst.SoundEmitter:PlaySound("dontstarve/common/together/battery/up")
+    --     if not inst:IsAsleep() then
+    --     --    StartIdleChargeSounds(inst)
+    --     --    StartSoundLoop(inst)
+    --     end
+    -- end
+    -- inst.components.machine.turnofffn = function(inst)
+    --     EnableHum(inst, false)
+    --     EnableLight(inst, false)
+    -- end
+    -- inst.components.machine.cooldowntime = 0
 end)
 
 -- AddPrefabPostInit('firesuppressor', )
 
 -- 清洁扫把对自己施法改变自己的皮肤
 AddPrefabPostInit('reskin_tool', function(inst)
+    -- 清洁扫把可以在物品栏里换肤
     inst:AddTag('castfrominventory')
 
+    -- 如果没有目标，那么目标设置为自己（手上的清洁扫把）
     local oldspell = inst.components.spellcaster.spell
     inst.components.spellcaster:SetSpellFn(function(tool, target, pos, caster)
         local newtarget = target or inst
