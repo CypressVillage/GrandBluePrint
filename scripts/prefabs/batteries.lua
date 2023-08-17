@@ -95,7 +95,6 @@ local function MakeBattery(data)
         inst.AnimState:PlayAnimation("off")
 
         inst:AddTag("structure")
-        inst:AddTag("power")
         MakeSnowCoveredPristine(inst)
 
         inst.entity:SetPristine()
@@ -118,9 +117,11 @@ local function MakeBattery(data)
         inst.components.workable:SetOnFinishCallback(onhammered)
         inst.components.workable:SetOnWorkCallback(onhit)
 
-        inst:AddComponent("battery")
-        inst.components.battery.canbeused = CanBeUsedAsBattery
-        inst.components.battery.onused = OnUsedAsBattery
+        -- inst:AddComponent("battery")
+        -- inst.components.battery.canbeused = CanBeUsedAsBattery
+        -- inst.components.battery.onused = OnUsedAsBattery
+
+        inst:AddComponent("electricmachine")
 
         -- MakeSnowCovered(inst)
 

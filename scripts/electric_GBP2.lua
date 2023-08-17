@@ -25,7 +25,7 @@ local LINK_L = {} LINK_L[NWIRE] = nil                       -- 左
 local LINK_R = {} LINK_R[NWIRE] = nil                       -- 右
 local LINK_U = {} LINK_U[NWIRE] = nil                       -- 上
 local LINK_D = {} LINK_D[NWIRE] = nil                       -- 下
-local POWERORCONSUMERS = {} POWERORCONSUMERS[NWIRE] = nil   -- 电器
+local MACHINES = {} MACHINES[NWIRE] = nil   -- 电器
 local WIREINSYS = {} WIREINSYS[NWIRE] = nil                 -- 导线所在系统的ID
 
 -- 系统的所有信息，索引为系统的sysID，从1开始
@@ -34,8 +34,7 @@ local SYSINFO = {}                                          -- 系统内容
 -- SYSINFO = {
 --     [wireGUID] = {
 --         wires = {GUID, GUID, ...},
---         powers = {GUID, GUID, ...},
---         consumers = {GUID, GUID, ...},
+--         machines = {GUID, GUID, ...},
 --     },
 --     ...
 -- }
@@ -47,13 +46,14 @@ _G.getLinkedThings = function(wireGUID)
         right = LINK_R[wireGUID],
         up = LINK_U[wireGUID],
         down = LINK_D[wireGUID],
-        other = POWERORCONSUMERS[wireGUID],
+        other = MACHINES[wireGUID],
+        -- TODO: other名字难听，换掉
     }
 end
 
 --[[ 获取用电器连接的第一根导线，返回nil表示用电器没有和导线链接 ]]
 _G.getfirstWire = function(GUID)
-    return table.indexof(POWERORCONSUMERS, GUID)
+    return table.indexof(MACHINES, GUID)
 end
 
 --[[ 获取导线所在系统 ]]
@@ -84,9 +84,9 @@ local function regiWire(wire)
 
     -- 注册新导线连接的用电器，只注册一个（一般不会注册一个以上。。。吧）
     local x, _, z = wire.Transform:GetWorldPosition()
-    local elements = TheSim:FindEntities(x, 0, z, 1, {}, {}, {'consumer', 'power'})
+    local elements = TheSim:FindEntities(x, 0, z, 1, {}, {}, {'electricmachine'})
     if elements[1] then
-        POWERORCONSUMERS[wireGUID] = elements[1].GUID
+        MACHINES[wireGUID] = elements[1].GUID
     end
 
     -- 注册新导线连接的导线
@@ -159,17 +159,12 @@ local function wireDeployed(wire)
         wires = {
             wire.GUID,
         },
-        consumers = {},
-        powers = {},
+        machines = {},
     }
 
     -- 如果新导线连接了电器就将其加入系统中
-    if POWERORCONSUMERS[wireGUID] and Ents[POWERORCONSUMERS[wireGUID]] then
-        if Ents[POWERORCONSUMERS[wireGUID]]:HasTag('power') then
-            table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[wireGUID])
-        elseif Ents[POWERORCONSUMERS[wireGUID]]:HasTag('consumer') then
-            table.insert(SYSINFO[newSysID].consumers, POWERORCONSUMERS[wireGUID])
-        end
+    if MACHINES[wireGUID] and Ents[MACHINES[wireGUID]] then
+        table.insert(SYSINFO[newSysID].machines, MACHINES[wireGUID])
     end
 
     -- 将旧系统合并到新系统中
@@ -181,11 +176,8 @@ local function wireDeployed(wire)
                     table.insert(SYSINFO[newSysID].wires, itemID)
                     WIREINSYS[itemID] = newSysID
                 end
-                for _, itemID in pairs(SYSINFO[oldsysID].powers) do
-                    table.insert(SYSINFO[newSysID].powers, itemID)
-                end
-                for _, itemID in pairs(SYSINFO[oldsysID].consumers) do
-                    table.insert(SYSINFO[newSysID].consumers, itemID)
+                for _, itemID in pairs(SYSINFO[oldsysID].machines) do
+                    table.insert(SYSINFO[newSysID].machines, itemID)
                 end
                 SYSINFO[oldsysID] = nil
             end
@@ -193,8 +185,7 @@ local function wireDeployed(wire)
     end
 
     -- 保险
-    SYSINFO[newSysID].powers = table.unique(SYSINFO[newSysID].powers)
-    SYSINFO[newSysID].consumers = table.unique(SYSINFO[newSysID].consumers)
+    SYSINFO[newSysID].machines = table.unique(SYSINFO[newSysID].machines)
 
     -- dbg(ShowElecInfo())
 end
@@ -222,8 +213,8 @@ local function removeWire(wire)
         LINK_U[LINK_D[wireGUID]] = nil
         LINK_D[wireGUID] = nil
     end
-    if POWERORCONSUMERS[wireGUID] then
-        POWERORCONSUMERS[wireGUID] = nil
+    if MACHINES[wireGUID] then
+        MACHINES[wireGUID] = nil
     end
 
     for _, itemID in pairs(SYSINFO[sysID].wires) do
@@ -256,8 +247,8 @@ _G.ShowWireInfo = function(GUID)
     if LINK_D[GUID] then
         str = str..'下:'..LINK_D[GUID]..',\n'
     end
-    if POWERORCONSUMERS[GUID] then
-        str = str..'连接的用电器:'..POWERORCONSUMERS[GUID]..','
+    if MACHINES[GUID] then
+        str = str..'连接的用电器:'..MACHINES[GUID]..','
     end
     if WIREINSYS[GUID] then
         str = str..'所属系统:'..WIREINSYS[GUID]..','
@@ -271,16 +262,12 @@ _G.ShowElecInfo = function()
     local str = '全局电路信息:\n'
     for k, v in pairs(SYSINFO) do
         str = str..'电路['..tostring(k)..']:'
-        str = str..'电源:'
-        for kk, vv in pairs(v.powers) do
-            str = str..tostring(vv)..','
-        end
         str = str..'\n          导线:'
         for kk, vv in pairs(v.wires) do
             str = str..tostring(vv)..','
         end
         str = str..'\n          用电器:'
-        for kk, vv in pairs(v.consumers) do
+        for kk, vv in pairs(v.machines) do
             str = str..tostring(vv)..'('..vv.prefab..'),'
         end
         str = str..'\n'
@@ -293,14 +280,10 @@ _G.OnDeployEleAppliance = function(obj)
     local elements = TheSim:FindEntities(x, 0, z, 0.5, {'electricwire'})
     if elements[1] then
         local wireGUID = elements[1].GUID
-        POWERORCONSUMERS[wireGUID] = obj.GUID
+        MACHINES[wireGUID] = obj.GUID
 
         local sysID = WIREINSYS[wireGUID]
-        if obj:HasTag('power') then
-            table.insert(SYSINFO[sysID].powers, obj.GUID)
-        elseif obj:HasTag('consumer') then
-            table.insert(SYSINFO[sysID].consumers, obj.GUID)
-        end
+        table.insert(SYSINFO[sysID].machines, obj.GUID)
     end
 end
 
@@ -308,22 +291,18 @@ _G.OnRemoveEleAppliance = function(obj)
     local x, y, z = obj.Transform:GetWorldPosition()
     local wires = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
     if wires[1] then
-        -- TODO: 我如何确保我一定能找到这个用电器？
+        -- TODO: 我如何确保我一定能找到这个用电器？寻找用电器的算法糟糕透了
         local wireGUID
         for _, wire in pairs(wires) do
-            if POWERORCONSUMERS[wire.GUID] == obj.GUID then
-                POWERORCONSUMERS[wire.GUID] = nil
+            if MACHINES[wire.GUID] == obj.GUID then
+                MACHINES[wire.GUID] = nil
                 wireGUID = wire.GUID
                 break
             end
         end
 
         local sysID = WIREINSYS[wireGUID]
-        if obj:HasTag('power') then
-            table.remove(SYSINFO[sysID].powers, table.indexof(SYSINFO[sysID].powers, obj.GUID))
-        elseif obj:HasTag('consumer') then
-            table.remove(SYSINFO[sysID].consumers, table.indexof(SYSINFO[sysID].consumers, obj.GUID))
-        end
+        table.remove(SYSINFO[sysID].machines, table.indexof(SYSINFO[sysID].machines, obj.GUID))
         dbg('wire '..wireGUID..'s '..obj.GUID..' removed')
     end
 end

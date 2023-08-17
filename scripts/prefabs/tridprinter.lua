@@ -197,7 +197,7 @@ local function fn()
     inst:AddTag("structure")
     inst:AddTag("giftmachine")
     inst:AddTag("prototyper")
-    inst:AddTag("power")
+    -- inst:AddTag("power")
     inst.getLinkedThings = getLinkedThings(inst)
     MakeSnowCoveredPristine(inst)
 
