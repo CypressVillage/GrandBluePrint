@@ -9,21 +9,21 @@ local _G = GLOBAL
 -- end)
 
 -- 为机器开关添加连接进电路的限制
-AddComponentPostInit('machine', function(self)
-    local oldturnonfn = self.turnofffn
-    self.turnonfn = function(inst)
-        -- 检查只对拥有elecmachine组件的对象生效
-        local elecm = inst.components.elecmachine
-        if not elecm then
-            return oldturnonfn(inst)
-        else
-            if elecm:check() then
-                return oldturnonfn(inst)
-            end
-        end
-    end
+-- AddComponentPostInit('machine', function(self)
+--     local oldturnonfn = self.turnofffn
+--     self.turnonfn = function(inst)
+--         -- 检查只对拥有elecmachine组件的对象生效
+--         local elecm = inst.components.elecmachine
+--         if not elecm then
+--             return oldturnonfn(inst)
+--         else
+--             if elecm:check() then
+--                 return oldturnonfn(inst)
+--             end
+--         end
+--     end
 
-end)
+-- end)
 
 -- 可靠的胶布可以修补烂电线
 AddPrefabPostInit('sewing_tape', function(inst)
@@ -47,6 +47,21 @@ end)
 
 -- winona的发电机可以开启或关闭
 AddPrefabPostInit('winona_battery_low', function(inst)
+    inst:AddComponent('machine')
+    inst.components.machine.cooldowntime = 0
+    inst.components.machine.turnonfn = function(inst)
+        inst.components.fueled:StartConsuming()
+        inst.components.circuitnode:ConnectTo("engineering")
+    end
+    inst.components.machine.turnofffn = function(inst)
+        inst.components.circuitnode:Disconnect()
+        inst.components.fueled:StopConsuming()
+    end
+
+    inst.components.machine:TurnOn()
+end)
+
+AddPrefabPostInit('winona_battery_high', function(inst)
     inst:AddComponent('machine')
     inst.components.machine.cooldowntime = 0
     inst.components.machine.turnonfn = function(inst)
