@@ -51,7 +51,7 @@ _G.getLinkedThings = function(wireGUID)
     }
 end
 
---[[ 获取用电器连接的第一根导线，适用于用电器已经和导线链接好的情况 ]]
+--[[ 获取用电器连接的第一根导线，返回nil表示用电器没有和导线链接 ]]
 _G.getfirstWire = function(GUID)
     return table.indexof(POWERORCONSUMERS, GUID)
 end
@@ -59,6 +59,15 @@ end
 --[[ 获取导线所在系统 ]]
 _G.getSysID = function(wireGUID)
     return WIREINSYS[wireGUID]
+end
+
+--[[ 获取机器所在系统的ID ]]
+_G.getSysIDbyMachine = function(inst)
+    local wireGUID = _G.getfirstWire(inst.GUID)
+    if wireGUID ~= nil then
+        return _G.getSysID(wireGUID)
+    end
+    return nil
 end
 
 -- [[ 获取系统信息 ]]
@@ -317,3 +326,8 @@ end
 
 _G.WireDeployed = wireDeployed
 _G.WireRemoved = removeWire
+
+
+_G.ReCalculateSysInfo = function(sysID)
+    
+end

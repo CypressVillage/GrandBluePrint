@@ -31,6 +31,7 @@ AddPrefabPostInit('sewing_tape', function(inst)
 end)
 
 -- winona的聚光灯可以开启或关闭
+-- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
 
     inst:AddComponent('machine')
