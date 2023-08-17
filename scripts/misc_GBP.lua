@@ -4,9 +4,9 @@ local _G = GLOBAL
     游戏杂项修改
 ]]
 
-AddPrefabPostInit('researchlab1', function(inst)
-    inst:AddTag('power')
-end)
+-- AddPrefabPostInit('researchlab1', function(inst)
+--     inst:AddTag('power')
+-- end)
 
 -- 为机器开关添加连接进电路的限制
 AddComponentPostInit('machine', function(self)
@@ -34,6 +34,7 @@ end)
 AddPrefabPostInit('winona_spotlight', function(inst)
 
     inst:AddComponent('machine')
+    inst.components.machine.cooldowntime = 0
     inst.components.machine.turnonfn = function(inst) 
         inst.components.circuitnode:ConnectTo("engineeringbattery")
     end
@@ -41,41 +42,23 @@ AddPrefabPostInit('winona_spotlight', function(inst)
         inst.components.circuitnode:Disconnect()
     end
 
-    -- 为了防止自动开灯，在开灯的时候加一个判断
-    local oldAddBatteryPower = inst.AddBatteryPower
-    inst.AddBatteryPower = function(inst, power)
-        if not inst.components.machine.ison then
-            inst.components.machine:TurnOff()
-        else
-            oldAddBatteryPower(inst, power)
-        end
-    end
-
+    inst.components.machine:TurnOn()
 end)
 
 -- winona的发电机可以开启或关闭
 AddPrefabPostInit('winona_battery_low', function(inst)
-    -- inst:AddTag('consumer')
+    inst:AddComponent('machine')
+    inst.components.machine.cooldowntime = 0
+    inst.components.machine.turnonfn = function(inst)
+        inst.components.fueled:StartConsuming()
+        inst.components.circuitnode:ConnectTo("engineering")
+    end
+    inst.components.machine.turnofffn = function(inst)
+        inst.components.circuitnode:Disconnect()
+        inst.components.fueled:StopConsuming()
+    end
 
-    -- inst:AddComponent('machine')
-
-    -- inst.components.machine.turnonfn = function(inst)
-    --     if not inst.components.fueled.consuming then
-    --         inst.components.fueled:StartConsuming()
-    --         -- BroadcastCircuitChanged(inst)
-    --         -- StartBattery(inst)
-    --     end
-    --     inst.SoundEmitter:PlaySound("dontstarve/common/together/battery/up")
-    --     if not inst:IsAsleep() then
-    --     --    StartIdleChargeSounds(inst)
-    --     --    StartSoundLoop(inst)
-    --     end
-    -- end
-    -- inst.components.machine.turnofffn = function(inst)
-    --     EnableHum(inst, false)
-    --     EnableLight(inst, false)
-    -- end
-    -- inst.components.machine.cooldowntime = 0
+    inst.components.machine:TurnOn()
 end)
 
 -- AddPrefabPostInit('firesuppressor', )
