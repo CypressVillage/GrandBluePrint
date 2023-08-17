@@ -164,7 +164,7 @@ local function wireDeployed(wire)
     }
 
     -- 如果新导线连接了电器就将其加入系统中
-    if POWERORCONSUMERS[wireGUID] then
+    if POWERORCONSUMERS[wireGUID] and Ents[POWERORCONSUMERS[wireGUID]] then
         if Ents[POWERORCONSUMERS[wireGUID]]:HasTag('power') then
             table.insert(SYSINFO[newSysID].powers, POWERORCONSUMERS[wireGUID])
         elseif Ents[POWERORCONSUMERS[wireGUID]]:HasTag('consumer') then
@@ -306,12 +306,16 @@ end
 
 _G.OnRemoveEleAppliance = function(obj)
     local x, y, z = obj.Transform:GetWorldPosition()
-    local wire = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
-    if wire[1] then
-        local wireGUID = wire[1].GUID
+    local wires = TheSim:FindEntities(x,0,z, 0.5, {'electricwire'})
+    if wires[1] then
         -- TODO: 我如何确保我一定能找到这个用电器？
-        if POWERORCONSUMERS[wireGUID] == obj.GUID then
-            POWERORCONSUMERS[wireGUID] = nil
+        local wireGUID
+        for _, wire in pairs(wires) do
+            if POWERORCONSUMERS[wire.GUID] == obj.GUID then
+                POWERORCONSUMERS[wire.GUID] = nil
+                wireGUID = wire.GUID
+                break
+            end
         end
 
         local sysID = WIREINSYS[wireGUID]
