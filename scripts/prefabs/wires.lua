@@ -28,9 +28,10 @@ local function MakeWire(data)
 
         -- RemoveObjFromSys(inst)
         if data.type == 'electric' then
-            _G.WireRemoved(inst)
+            -- _G.WireRemoved(inst)
+            TheWorld.components.electricsystem:wireRemoved(inst)
         elseif data.type == 'logic' then
-            _G.LogicWireRemoved(inst)
+            -- _G.LogicWireRemoved(inst)
         end
         if inst then inst:Remove() end
     end
@@ -38,9 +39,10 @@ local function MakeWire(data)
     local function refreshState(obj, isexpand)
         local linkThings
         if data.type == 'electric' then
-            linkThings = _G.getLinkedThings(obj.GUID)
+            -- linkThings = _G.getLinkedThings(obj.GUID)
+            linkThings = TheWorld.components.electricsystem:getLinkedThings(obj.GUID)
         elseif data.type == 'logic' then
-            linkThings = _G.getLogicLinkedThings(obj.GUID)
+            -- linkThings = _G.getLogicLinkedThings(obj.GUID)
         end
         local Animstr = ''
         if linkThings.left then Animstr = Animstr..'L' end
@@ -98,9 +100,10 @@ local function MakeWire(data)
             -- wire.SoundEmitter:PlaySound("dontstarve/common/  place_structure_wood")
 
             if data.type == 'electric' then
-                _G.WireDeployed(wire)
+                -- _G.WireDeployed(wire)
+                TheWorld.components.electricsystem:wireDeployed(wire)
             elseif data.type == 'logic' then
-                _G.LogicWireDeployed(wire)
+                -- _G.LogicWireDeployed(wire)
             end
             refreshState(wire, true)
             -- refreshState(wire, true)
@@ -109,14 +112,19 @@ local function MakeWire(data)
         end
     end
 
-    local function onsave(inst, data)
+    local function onsave(inst)
+        return {
+            type = data.type
+        }
     end
 
+    -- TODO: 导线似乎没有成功reload
     local function onload(inst, data)
         if data.type == 'electric' then
-            _G.WireDeployed(wire)
+            -- _G.WireDeployed(wire)
+            TheWorld.components.electricsystem:wireDeployed(inst)
         elseif data.type == 'logic' then
-            _G.LogicWireDeployed(wire)
+            -- _G.LogicWireDeployed(inst)
         end
         refreshState(inst, true)
         -- refreshState(inst, true)

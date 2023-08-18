@@ -17,6 +17,7 @@ local ElectricMachine = Class(function(self, inst)
         self:NotifySystemChanged()
     end
 
+    self.consumption = 0
     self.PERIOD = 0.5
     self._machinetask = nil
     self.OnMachineTask = function(inst) end
@@ -39,7 +40,7 @@ function ElectricMachine:IsOn()
 end
 
 function ElectricMachine:OnBuilt()
-    _G.OnDeployEleAppliance(self.inst)
+    TheWorld.components.electricsystem:OnDeployEleAppliance(self.inst)
 end
 
 -- 接口，在Entity层实现
@@ -61,9 +62,9 @@ function ElectricMachine:StopMachineTask()
 end
 
 function ElectricMachine:NotifySystemChanged()
-    local sysID = _G.getSysIDbyMachine(self.inst)
+    local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(self.inst)
     if sysID ~= nil then
-        _G.ReCalculateSysInfo(sysID)
+        TheWorld.components.electricsystem:ReCalculateSysInfo(sysID)
     end
 end
 

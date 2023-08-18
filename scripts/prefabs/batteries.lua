@@ -23,7 +23,7 @@ local function MakeBattery(data)
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- 把动画放到合适的位置
         fx:SetMaterial("stone") -- 动画的效果是砸石头
         
-        _G.OnRemoveEleAppliance(inst)
+        TheWorld.components.electricsystem:OnRemoveEleAppliance(inst)
         inst:Remove() -- 然后把自己去掉
     end
 
@@ -46,7 +46,7 @@ local function MakeBattery(data)
                 inst.components.burnable.onburnt(inst)
             end
         end
-        _G.OnDeployEleAppliance(inst)
+        TheWorld.components.electricsystem:OnDeployEleAppliance(inst)
     end
 
     local function onbuiltsound(inst)
@@ -59,7 +59,7 @@ local function MakeBattery(data)
         inst.AnimState:PushAnimation("off", false)
         inst:DoTaskInTime(0, onbuiltsound, 'lvl2')
 
-        _G.OnDeployEleAppliance(inst)
+        TheWorld.components.electricsystem:OnDeployEleAppliance(inst)
     end
 
     ---------------------------------------------------------------------------------

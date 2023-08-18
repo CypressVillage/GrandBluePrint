@@ -30,6 +30,11 @@ AddPrefabPostInit('sewing_tape', function(inst)
     inst:AddComponent('repair_broken_wire')
 end)
 
+AddPrefabPostInit('forest', function(inst)
+    -- TODO:尝试判断主机
+    inst:AddComponent('electricsystem')
+end)
+
 -- winona的聚光灯可以开启或关闭
 -- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
