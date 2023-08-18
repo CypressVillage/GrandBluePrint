@@ -88,40 +88,14 @@ local function MakeWire(data)
     --     end
     -- end
 
-    local function ondeploywire(inst, pt, deployer, rot )
-        local wire = SpawnPrefab(data.name)
-        if wire ~= nil then
-            local x = math.floor(pt.x) + .5
-            local z = math.floor(pt.z) + .5
-            wire.Transform:SetPosition(x,0,z)
-
-            inst.components.stackable:Get():Remove()
-
-            -- wire.SoundEmitter:PlaySound("dontstarve/common/  place_structure_wood")
-
-            if data.type == 'electric' then
-                -- _G.WireDeployed(wire)
-                TheWorld.components.electricsystem:wireDeployed(wire)
-            elseif data.type == 'logic' then
-                -- _G.LogicWireDeployed(wire)
-            end
-            refreshState(wire, true)
-            -- refreshState(wire, true)
-            -- RefreshElectricSys(wire)
-            -- listElectricSysInfo()
-        end
-    end
-
     local function onsave(inst)
-        return {
-            type = data.type
-        }
     end
 
     -- TODO: 导线似乎没有成功reload
-    local function onload(inst, data)
+    local function onload(inst, _data)
         if data.type == 'electric' then
             -- _G.WireDeployed(wire)
+            dbg('electric wire deployed')
             TheWorld.components.electricsystem:wireDeployed(inst)
         elseif data.type == 'logic' then
             -- _G.LogicWireDeployed(inst)
@@ -185,6 +159,32 @@ local function MakeWire(data)
         return inst
     end
 
+
+
+    local function ondeploywire(inst, pt, deployer, rot )
+        local wire = SpawnPrefab(data.name)
+        if wire ~= nil then
+            local x = math.floor(pt.x) + .5
+            local z = math.floor(pt.z) + .5
+            wire.Transform:SetPosition(x,0,z)
+
+            inst.components.stackable:Get():Remove()
+
+            -- wire.SoundEmitter:PlaySound("dontstarve/common/  place_structure_wood")
+
+            if data.type == 'electric' then
+                -- _G.WireDeployed(wire)
+                TheWorld.components.electricsystem:wireDeployed(wire)
+            elseif data.type == 'logic' then
+                -- _G.LogicWireDeployed(wire)
+            end
+            refreshState(wire, true)
+            -- refreshState(wire, true)
+            -- RefreshElectricSys(wire)
+            -- listElectricSysInfo()
+        end
+    end
+
     local function itemfn()
         local inst = CreateEntity()
 
@@ -201,7 +201,7 @@ local function MakeWire(data)
 
         -- MakeInventoryFloatable(inst)
 
-        inst:AddTag("eyeturret") --眼球塔的专属标签，但为了deployable组件的摆放 名字而使用（显示为“放置”）
+        inst:AddTag("eyeturret") --眼球塔的专属标签，但为了deployable组件的摆放名字而使用（显示为“放置”）
 
         inst.entity:SetPristine()
 
@@ -236,7 +236,11 @@ local function MakeWire(data)
         return inst
     end
 
-    return Prefab(data.name, fn, assets, prefabs), Prefab(data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}), MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, nil)
+    return unpack{
+        Prefab(data.name, fn, assets, prefabs),
+        Prefab(data.name.."_item", itemfn, assets, { data.name, data.name..'_item_placer'}),
+        MakePlacer(data.name.."_item_placer",  data.name, data.name, "None", true, false, true, 1.5, nil, nil, nil)
+    }
 end
 
 local wireprefabs = {}

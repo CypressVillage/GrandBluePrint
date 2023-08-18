@@ -1,4 +1,4 @@
-local NWIRE = 64
+local NWIRE = CONFIGS_GBP.NWIRE
 
 local ElectricSystem = Class(function(self, inst)
     self.inst = inst
