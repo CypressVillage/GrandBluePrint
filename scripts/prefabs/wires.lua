@@ -91,18 +91,13 @@ local function MakeWire(data)
     local function onsave(inst)
     end
 
-    -- TODO: 导线似乎没有成功reload
     local function onload(inst, _data)
         if data.type == 'electric' then
-            -- _G.WireDeployed(wire)
-            dbg('electric wire deployed')
             TheWorld.components.electricsystem:wireDeployed(inst)
         elseif data.type == 'logic' then
             -- _G.LogicWireDeployed(inst)
         end
         refreshState(inst, true)
-        -- refreshState(inst, true)
-        -- RefreshElectricSys(inst)
     end
 
     local function fn()

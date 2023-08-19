@@ -17,6 +17,7 @@ local ElectricSystem = Class(function(self, inst)
     --     [wireGUID] = {
     --         wires = {GUID, GUID, ...},
     --         machines = {GUID, GUID, ...},
+    --         consumption = 0,
     --     },
     --     ...
     -- }
@@ -269,6 +270,7 @@ function ElectricSystem:OnDeployEleAppliance(obj)
 
         local sysID = self.WIREINSYS[wireGUID]
         table.insert(self.SYSINFO[sysID].machines, obj.GUID)
+        self:ReCalculateSysInfo(sysID)
     end
 end
 
@@ -288,12 +290,22 @@ function ElectricSystem:OnRemoveEleAppliance(obj)
 
         local sysID = self.WIREINSYS[wireGUID]
         table.remove(self.SYSINFO[sysID].machines, table.indexof(self.SYSINFO[sysID].machines, obj.GUID))
+        self:ReCalculateSysInfo(sysID)
         dbg('wire '..wireGUID..'s '..obj.GUID..' removed')
     end
 end
 
-_G.ReCalculateSysInfo = function(sysID)
-
+function ElectricSystem:ReCalculateSysInfo(sysID)
+    local consumption = 0
+    for _, machineID in pairs(self.SYSINFO[sysID].machines) do
+        local machine = Ents[machineID].components.electricmachine
+        if machine:IsOn() then
+            consumption = consumption + machine.consumption
+        end
+    end
+    self.SYSINFO[sysID].consumption = consumption
+    dbg('consumption now:')
+    dbg(consumption)
 end
 
 return ElectricSystem
