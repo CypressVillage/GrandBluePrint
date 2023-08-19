@@ -147,6 +147,8 @@ function ElectricSystem:wireDeployed(wire)
             wire.GUID,
         },
         machines = {},
+        consumption = 0,
+        state = 'fine'
     }
 
     -- 如果新导线连接了电器就将其加入系统中
@@ -306,8 +308,19 @@ function ElectricSystem:ReCalculateSysInfo(sysID)
         end
     end
     self.SYSINFO[sysID].consumption = consumption
+
+    if consumption >= 0 then
+        self.SYSINFO[sysID].state = 'fine'
+    elseif consumption < 0 then
+        self.SYSINFO[sysID].state = 'undervoltage'
+    end
     dbg('consumption now:')
     dbg(consumption)
+    -- TODO: 重构使得电路一改变，所有的电器就更新状态
+end
+
+function ElectricSystem:getSystemState(sysID)
+    return self.SYSINFO[sysID].state
 end
 
 return ElectricSystem

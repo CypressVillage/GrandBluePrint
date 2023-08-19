@@ -38,8 +38,8 @@ end)
 -- winona的聚光灯可以开启或关闭
 -- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
-
     inst:AddComponent('electricmachine')
+    inst.components.electricmachine.consumption = -1
     inst.components.electricmachine:SetOnMachineTask(function()
         inst:AddBatteryPower(0.5)
     end)
@@ -53,33 +53,36 @@ AddPrefabPostInit('winona_spotlight', function(inst)
     inst.components.machine:TurnOn()
 end)
 
--- winona的发电机可以开启或关闭
 AddPrefabPostInit('winona_battery_low', function(inst)
-    inst:AddComponent('machine')
-    inst.components.machine.cooldowntime = 0
-    inst.components.machine.turnonfn = function(inst)
+    inst:AddComponent('electricmachine')
+    inst.components.electricmachine.consumption = 2
+    inst.components.electricmachine:SetOnMachineTask(function()
+    end)
+    inst.components.electricmachine:SetTurnOnFn(function(inst)
         inst.components.fueled:StartConsuming()
         inst.components.circuitnode:ConnectTo("engineering")
-    end
-    inst.components.machine.turnofffn = function(inst)
+    end)
+    inst.components.electricmachine:SetTurnOffFn(function(inst)
         inst.components.circuitnode:Disconnect()
         inst.components.fueled:StopConsuming()
-    end
+    end)
 
     inst.components.machine:TurnOn()
 end)
 
 AddPrefabPostInit('winona_battery_high', function(inst)
-    inst:AddComponent('machine')
-    inst.components.machine.cooldowntime = 0
-    inst.components.machine.turnonfn = function(inst)
+    inst:AddComponent('electricmachine')
+    inst.components.electricmachine.consumption = 2
+    inst.components.electricmachine:SetOnMachineTask(function()
+    end)
+    inst.components.electricmachine:SetTurnOnFn(function(inst)
         inst.components.fueled:StartConsuming()
         inst.components.circuitnode:ConnectTo("engineering")
-    end
-    inst.components.machine.turnofffn = function(inst)
+    end)
+    inst.components.electricmachine:SetTurnOffFn(function(inst)
         inst.components.circuitnode:Disconnect()
         inst.components.fueled:StopConsuming()
-    end
+    end)
 
     inst.components.machine:TurnOn()
 end)
