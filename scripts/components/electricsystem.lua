@@ -176,6 +176,8 @@ function ElectricSystem:wireDeployed(wire)
     -- 保险
     self.SYSINFO[newSysID].machines = table.unique(self.SYSINFO[newSysID].machines)
 
+    self:OnElectricSysChanged(newSysID)
+    -- dbg('wire '..wire.GUID..' deployed')
     -- dbg(ShowElecInfo())
 end
 
@@ -265,16 +267,21 @@ function ElectricSystem:ShowElecInfo()
 end
 
 function ElectricSystem:OnDeployEleAppliance(obj)
+    -- dbg(obj.name..'deploying!')
     local x, _, z = obj.Transform:GetWorldPosition()
     local elements = TheSim:FindEntities(x, 0, z, 0.5, {'electricwire'})
+    local sysID
     if elements[1] then
-        local wireGUID = elements[1].GUID
-        self.MACHINES[wireGUID] = obj.GUID
+        for _, wire in pairs(elements) do
+            -- dbg('find a wire around')
+            local wireGUID = wire.GUID
+            self.MACHINES[wireGUID] = obj.GUID
+            sysID = self.WIREINSYS[wireGUID]
+            table.insert(self.SYSINFO[sysID].machines, obj.GUID)
+        end
 
-        local sysID = self.WIREINSYS[wireGUID]
-        table.insert(self.SYSINFO[sysID].machines, obj.GUID)
         self.SYSINFO[sysID].machines = table.unique(self.SYSINFO[sysID].machines)
-        self:ReCalculateSysInfo(sysID)
+        self:OnElectricSysChanged(sysID)
     end
 end
 
@@ -288,19 +295,24 @@ function ElectricSystem:OnRemoveEleAppliance(obj)
             if self.MACHINES[wire.GUID] == obj.GUID then
                 self.MACHINES[wire.GUID] = nil
                 wireGUID = wire.GUID
-                break
             end
         end
 
         local sysID = self.WIREINSYS[wireGUID]
-        table.remove(self.SYSINFO[sysID].machines, table.indexof(self.SYSINFO[sysID].machines, obj.GUID))
-        self:ReCalculateSysInfo(sysID)
-        dbg('wire '..wireGUID..'s '..obj.GUID..' removed')
+        if sysID ~= nil then
+            local index = table.indexof(self.SYSINFO[sysID].machines, obj.GUID)
+            if index ~= nil then -- 奇奇怪怪
+                table.remove(self.SYSINFO[sysID].machines, index)
+            end
+        end
+
+        self:OnElectricSysChanged(sysID)
     end
 end
 
 function ElectricSystem:ReCalculateSysInfo(sysID)
     local consumption = 0
+    if table.size(self.SYSINFO[sysID].machines) == 0 then return end
     for _, machineID in pairs(self.SYSINFO[sysID].machines) do
         local machine = Ents[machineID].components.electricmachine
         if machine:IsOn() then
@@ -314,13 +326,20 @@ function ElectricSystem:ReCalculateSysInfo(sysID)
     elseif consumption < 0 then
         self.SYSINFO[sysID].state = 'undervoltage'
     end
-    dbg('consumption now:')
-    dbg(consumption)
+    -- dbg('consumption now:')
+    -- dbg(consumption)
     -- TODO: 重构使得电路一改变，所有的电器就更新状态
 end
 
 function ElectricSystem:getSystemState(sysID)
     return self.SYSINFO[sysID].state
+end
+
+function ElectricSystem:OnElectricSysChanged(sysID)
+    self:ReCalculateSysInfo(sysID)
+    for _, machineID in pairs(self.SYSINFO[sysID].machines) do
+        Ents[machineID].components.electricmachine:RefreshState()
+    end
 end
 
 return ElectricSystem

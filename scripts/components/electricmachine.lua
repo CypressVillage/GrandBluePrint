@@ -17,7 +17,7 @@ local ElectricMachine = Class(function(self, inst)
         end
         self.machine.ison = true
         self:NotifySystemChanged()
-        self:StartMachineTask()
+        self:RefreshState()
     end
     self.machine.turnofffn = function()
         if self.turnofffn then
@@ -25,7 +25,7 @@ local ElectricMachine = Class(function(self, inst)
         end
         self.machine.ison = false
         self:NotifySystemChanged()
-        self:StopMachineTask()
+        self:RefreshState()
     end
 
     self.turnonfn = nil
@@ -57,9 +57,16 @@ function ElectricMachine:OnBuilt()
     TheWorld.components.electricsystem:OnDeployEleAppliance(self.inst)
 end
 
+function ElectricMachine:OnSave()
+    return { ison = self:IsOn() }
+end
+
+function ElectricMachine:OnLoad(data)
+    TheWorld.components.electricsystem:OnDeployEleAppliance(self.inst)
+end
+
 function ElectricMachine:OnRemoveEntity()
     TheWorld.components.electricsystem:OnRemoveEleAppliance(self.inst)
-    dbg('OnRemoveEntity')
 end
 
 -- 接口，在Entity层实现
@@ -88,10 +95,26 @@ function ElectricMachine:StopMachineTask()
     end
 end
 
+-- 我通知system
 function ElectricMachine:NotifySystemChanged()
     local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(self.inst)
     if sysID ~= nil then
-        TheWorld.components.electricsystem:ReCalculateSysInfo(sysID)
+        TheWorld.components.electricsystem:OnElectricSysChanged(sysID)
+    end
+end
+
+-- system通知我
+function ElectricMachine:RefreshState()
+    local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(self.inst)
+    if sysID == nil then return end
+    if self:IsOn() then
+        if TheWorld.components.electricsystem:getSystemState(sysID) == 'fine' then
+            self:StartMachineTask()
+        else
+            self:StopMachineTask()
+        end
+    else
+        self:StopMachineTask()
     end
 end
 
