@@ -46,6 +46,11 @@ function ElectricMachine:OnBuilt()
     TheWorld.components.electricsystem:OnDeployEleAppliance(self.inst)
 end
 
+function ElectricMachine:OnRemoveEntity()
+    TheWorld.components.electricsystem:OnRemoveEleAppliance(self.inst)
+    dbg('OnRemoveEntity')
+end
+
 -- 接口，在Entity层实现
 function ElectricMachine:SetOnMachineTask(fn)
     self.OnMachineTask = fn

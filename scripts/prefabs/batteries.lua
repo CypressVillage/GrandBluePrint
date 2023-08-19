@@ -22,8 +22,7 @@ local function MakeBattery(data)
         local fx = SpawnPrefab("collapse_small") -- 摧毁小东西的动画
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- 把动画放到合适的位置
         fx:SetMaterial("stone") -- 动画的效果是砸石头
-        
-        TheWorld.components.electricsystem:OnRemoveEleAppliance(inst)
+
         inst:Remove() -- 然后把自己去掉
     end
 
@@ -46,7 +45,6 @@ local function MakeBattery(data)
                 inst.components.burnable.onburnt(inst)
             end
         end
-        TheWorld.components.electricsystem:OnDeployEleAppliance(inst)
     end
 
     local function onbuiltsound(inst)
@@ -58,8 +56,6 @@ local function MakeBattery(data)
         inst.AnimState:PushAnimation("working_loop", false)
         inst.AnimState:PushAnimation("off", false)
         inst:DoTaskInTime(0, onbuiltsound, 'lvl2')
-
-        TheWorld.components.electricsystem:OnDeployEleAppliance(inst)
     end
 
     ---------------------------------------------------------------------------------
