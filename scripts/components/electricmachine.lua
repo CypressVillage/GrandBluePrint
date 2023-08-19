@@ -10,10 +10,13 @@ local ElectricMachine = Class(function(self, inst)
 
     self.inst:AddComponent("machine")
     self.machine = self.inst.components.machine
+    self.machine.cooldowntime = 0
     self.machine.turnonfn = function()
+        self.machine.ison = true
         self:NotifySystemChanged()
     end
     self.machine.turnofffn = function()
+        self.machine.ison = false
         self:NotifySystemChanged()
     end
 

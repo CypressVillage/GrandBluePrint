@@ -270,6 +270,7 @@ function ElectricSystem:OnDeployEleAppliance(obj)
 
         local sysID = self.WIREINSYS[wireGUID]
         table.insert(self.SYSINFO[sysID].machines, obj.GUID)
+        self.SYSINFO[sysID].machines = table.unique(self.SYSINFO[sysID].machines)
         self:ReCalculateSysInfo(sysID)
     end
 end
