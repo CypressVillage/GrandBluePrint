@@ -39,14 +39,16 @@ end)
 -- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
 
-    inst:AddComponent('machine')
-    inst.components.machine.cooldowntime = 0
-    inst.components.machine.turnonfn = function(inst) 
+    inst:AddComponent('electricmachine')
+    inst.components.electricmachine:SetOnMachineTask(function()
+        inst:AddBatteryPower(0.5)
+    end)
+    inst.components.electricmachine:SetTurnOnFn(function(inst)
         inst.components.circuitnode:ConnectTo("engineeringbattery")
-    end
-    inst.components.machine.turnofffn = function(inst) 
+    end)
+    inst.components.electricmachine:SetTurnOffFn(function(inst)
         inst.components.circuitnode:Disconnect()
-    end
+    end)
 
     inst.components.machine:TurnOn()
 end)

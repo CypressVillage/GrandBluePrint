@@ -12,13 +12,24 @@ local ElectricMachine = Class(function(self, inst)
     self.machine = self.inst.components.machine
     self.machine.cooldowntime = 0
     self.machine.turnonfn = function()
+        if self.turnonfn then
+            self.turnonfn(self.inst)
+        end
         self.machine.ison = true
         self:NotifySystemChanged()
+        self:StartMachineTask()
     end
     self.machine.turnofffn = function()
+        if self.turnofffn then
+            self.turnofffn(self.inst)
+        end
         self.machine.ison = false
         self:NotifySystemChanged()
+        self:StopMachineTask()
     end
+
+    self.turnonfn = nil
+    self.turnofffn = nil
 
     self.consumption = 0
     self.PERIOD = 0.5
@@ -54,6 +65,14 @@ end
 -- 接口，在Entity层实现
 function ElectricMachine:SetOnMachineTask(fn)
     self.OnMachineTask = fn
+end
+
+function ElectricMachine:SetTurnOnFn(fn)
+    self.turnonfn = fn
+end
+
+function ElectricMachine:SetTurnOffFn(fn)
+    self.turnofffn = fn
 end
 
 function ElectricMachine:StartMachineTask()

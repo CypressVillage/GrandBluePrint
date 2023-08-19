@@ -18,6 +18,7 @@ local ElectricSystem = Class(function(self, inst)
     --         wires = {GUID, GUID, ...},
     --         machines = {GUID, GUID, ...},
     --         consumption = 0,
+    --         state = fine | undervoltage | overvoltage
     --     },
     --     ...
     -- }
