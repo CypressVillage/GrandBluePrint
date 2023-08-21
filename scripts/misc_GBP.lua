@@ -32,7 +32,9 @@ end)
 
 AddPrefabPostInit('forest', function(inst)
     -- TODO:尝试判断主机
-    inst:AddComponent('electricsystem')
+    if TheWorld.ismastersim then
+        inst:AddComponent('electricsystem')
+    end
 end)
 
 -- winona的聚光灯可以开启或关闭
