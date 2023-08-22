@@ -14,17 +14,19 @@ local ElectricSystem = Class(function(self, inst)
     self.SYSINFO = {}
     -- 系统内容
     -- SYSINFO = {
-    --     [wireGUID] = {
+    --     [sysID] = {
     --         wires = {GUID, GUID, ...},
     --         machines = {GUID, GUID, ...},
     --         consumption = 0,
-    --         state = fine | undervoltage | overvoltage
+    --         state = fine | undervoltage | overvoltage,
+    --         hasbattery = false,
+    --         haspower = false,
+    --         batteries = {},
+    --         powers = {},
     --     },
     --     ...
     -- }
-end,
-nil,
-{})
+end)
 
 --[[ 获取导线连接内容 ]]
 function ElectricSystem:getLinkedThings(wireGUID)
@@ -147,8 +149,12 @@ function ElectricSystem:wireDeployed(wire)
             wire.GUID,
         },
         machines = {},
+        powers = {},
+        batteries = {},
         consumption = 0,
-        state = 'fine'
+        state = 'fine',
+        hasbattery = false,
+        haspower = false,
     }
 
     -- 如果新导线连接了电器就将其加入系统中
@@ -311,21 +317,36 @@ function ElectricSystem:OnRemoveEleAppliance(obj)
 end
 
 function ElectricSystem:ReCalculateSysInfo(sysID)
+    local system = self.SYSINFO[sysID]
+    if table.size(system.machines) == 0 then return end
+
+    local powers = {}
+    local batteries = {}
     local consumption = 0
-    if table.size(self.SYSINFO[sysID].machines) == 0 then return end
-    for _, machineID in pairs(self.SYSINFO[sysID].machines) do
+    -- 计算consumption，更新batteries和powers列表
+    for _, machineID in pairs(system.machines) do
         local machine = Ents[machineID].components.electricmachine
-        if machine:IsOn() then
+        if machine:IsOn() and machine:IsValid() then
+            if machine.inst:HasTag('electricbattery') then
+                table.insert(batteries, machine.inst.GUID)
+            elseif machine.inst:HasTag('electricpower') then
+                table.insert(powers, machine.inst.GUID)
+            end
             consumption = consumption + machine.consumption
         end
     end
-    self.SYSINFO[sysID].consumption = consumption
+    system.powers = powers
+    system.batteries = batteries
+    system.haspower = #powers == 0 and false or true
+    system.hasbattery = #batteries == 0 and false or true
+    system.consumption = consumption
 
     if consumption >= 0 then
-        self.SYSINFO[sysID].state = 'fine'
+        system.state = 'fine'
     elseif consumption < 0 then
-        self.SYSINFO[sysID].state = 'undervoltage'
+        system.state = 'undervoltage'
     end
+
     -- dbg('consumption now:')
     -- dbg(consumption)
     -- TODO: 重构使得电路一改变，所有的电器就更新状态
@@ -337,8 +358,9 @@ end
 
 function ElectricSystem:OnElectricSysChanged(sysID)
     self:ReCalculateSysInfo(sysID)
+    local state = self:getSystemState(sysID)
     for _, machineID in pairs(self.SYSINFO[sysID].machines) do
-        Ents[machineID].components.electricmachine:RefreshState()
+        Ents[machineID].components.electricmachine:RefreshState(state)
     end
 end
 
