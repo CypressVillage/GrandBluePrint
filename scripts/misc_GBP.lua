@@ -40,6 +40,9 @@ end)
 -- winona的聚光灯可以开启或关闭
 -- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
+    if not TheWorld.ismastersim then
+        return inst
+    end
     inst:AddComponent('electricmachine')
     inst.components.electricmachine.consumption = -1
     inst.components.electricmachine:SetOnMachineTask(function()
@@ -56,34 +59,52 @@ AddPrefabPostInit('winona_spotlight', function(inst)
 end)
 
 AddPrefabPostInit('winona_battery_low', function(inst)
+    inst:AddTag('electricpower')
+    if not TheWorld.ismastersim then
+        return inst
+    end
     inst:AddComponent('electricmachine')
     inst.components.electricmachine.consumption = 2
-    inst.components.electricmachine:SetOnMachineTask(function()
-    end)
+    inst.components.electricmachine:SetOnMachineTask(function() end)
     inst.components.electricmachine:SetTurnOnFn(function(inst)
         inst.components.fueled:StartConsuming()
         inst.components.circuitnode:ConnectTo("engineering")
+        inst.AnimState:PlayAnimation("idle_charge", true)
     end)
     inst.components.electricmachine:SetTurnOffFn(function(inst)
         inst.components.circuitnode:Disconnect()
         inst.components.fueled:StopConsuming()
+        inst.AnimState:PlayAnimation("idle_empty", true)
+        -- TODO: 这里并不能成功显示电池的数据
+        local section  = inst.components.fueled:GetCurrentSection()
+        inst.AnimState:OverrideSymbol("m2", "winona_battery_low", "m"..tostring(math.clamp(section + 1, 1, 7)))
+        inst.AnimState:ClearOverrideSymbol("plug")
+        dbg(section)
     end)
 
     inst.components.machine:TurnOn()
 end)
 
 AddPrefabPostInit('winona_battery_high', function(inst)
+    inst:AddTag('electricpower')
+    if not TheWorld.ismastersim then
+        return inst
+    end
     inst:AddComponent('electricmachine')
     inst.components.electricmachine.consumption = 2
-    inst.components.electricmachine:SetOnMachineTask(function()
-    end)
+    inst.components.electricmachine:SetOnMachineTask(function() end)
     inst.components.electricmachine:SetTurnOnFn(function(inst)
         inst.components.fueled:StartConsuming()
         inst.components.circuitnode:ConnectTo("engineering")
+        inst.AnimState:PlayAnimation("idle_charge", true)
     end)
     inst.components.electricmachine:SetTurnOffFn(function(inst)
         inst.components.circuitnode:Disconnect()
         inst.components.fueled:StopConsuming()
+        inst.AnimState:PlayAnimation("idle_empty", true)
+        local section  = inst.components.fueled:GetCurrentSection()
+        inst.AnimState:OverrideSymbol("m2", "winona_battery_high", "m"..tostring(math.clamp(section + 1, 1, 7)))
+        inst.AnimState:ClearOverrideSymbol("plug")
     end)
 
     inst.components.machine:TurnOn()

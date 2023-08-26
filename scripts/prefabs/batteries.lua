@@ -59,16 +59,16 @@ local function MakeBattery(data)
     end
 
     ---------------------------------------------------------------------------------
-    local function CanBeUsedAsBattery(inst, user)
-        if inst.components.fueled ~= nil and inst.components.fueled.currentfuel >= BATTERY_COST then
-            return true
-        else
-            return false, "NOT_ENOUGH_CHARGE"
-        end
+    local function OnFuelEmpty()
+        
     end
 
-    local function OnUsedAsBattery(inst, user)
-        inst.components.fueled:DoDelta(-data.cost, user)
+    local function OnAddFuel()
+        
+    end
+
+    local function onmachinetask(inst)
+        inst.components.fueled:DoDelta(1)
     end
 
     local function fn()
@@ -113,11 +113,33 @@ local function MakeBattery(data)
         inst.components.workable:SetOnFinishCallback(onhammered)
         inst.components.workable:SetOnWorkCallback(onhit)
 
-        -- inst:AddComponent("battery")
-        -- inst.components.battery.canbeused = CanBeUsedAsBattery
-        -- inst.components.battery.onused = OnUsedAsBattery
+        inst:AddComponent("fueled")
+        inst.components.fueled:SetDepletedFn(OnFuelEmpty)
+        inst.components.fueled:SetTakeFuelFn(OnAddFuel)
+        inst.components.fueled:InitializeFuelLevel(30*4)
+        inst.components.fueled.fueltype = nil
 
+        inst:AddTag("electricbattery")
         inst:AddComponent("electricmachine")
+        inst.components.electricmachine:SetOnMachineTask(onmachinetask)
+        inst.components.electricmachine:SetOnRefreshState(function(inst)
+            local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(inst)
+            if not sysID then return end
+            local sysinfo = TheWorld.components.electricsystem:getSysInfo(sysID)
+            
+            if sysinfo.haspower then
+                inst.components.fueled.rate = -1
+            else
+                inst.components.fueled.rate = 1
+            end
+
+            if sysinfo.haspower then
+                inst.components.fueled:StartConsuming()
+            else
+                inst.components.fueled:StopConsuming()
+            end
+            dbg(inst.components.fueled:GetDebugString())
+        end)
 
         -- MakeSnowCovered(inst)
 

@@ -32,7 +32,8 @@ local ElectricMachine = Class(function(self, inst)
     self.consumption = 0
     self.PERIOD = 0.5
     self._machinetask = nil
-    self.OnMachineTask = function(inst) end
+    self.OnMachineTask = nil
+    self.OnRefreshState = nil
 end)
 
 function ElectricMachine:IsValid()
@@ -64,6 +65,10 @@ function ElectricMachine:SetOnMachineTask(fn)
     self.OnMachineTask = fn
 end
 
+function ElectricMachine:SetOnRefreshState(fn)
+    self.OnRefreshState = fn
+end
+
 function ElectricMachine:SetTurnOnFn(fn)
     self.turnonfn = fn
 end
@@ -89,12 +94,15 @@ end
 function ElectricMachine:NotifySystemChanged()
     local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(self.inst)
     if sysID ~= nil then
-        TheWorld.components.electricsystem:OnElectricSysChanged(sysID)
+        TheWorld.components.electricsystem:OnElectricSysChanged(sysID, self)
     end
 end
 
 -- system通知我
 function ElectricMachine:RefreshState(systemstate)
+    if self.OnRefreshState then
+        self.OnRefreshState(self.inst)
+    end
     if systemstate == 'fine' and self:IsOn() and self:IsValid() then
         self:StartMachineTask()
     else

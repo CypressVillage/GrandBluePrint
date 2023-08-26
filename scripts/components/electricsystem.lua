@@ -316,7 +316,7 @@ function ElectricSystem:OnRemoveEleAppliance(obj)
     end
 end
 
-function ElectricSystem:ReCalculateSysInfo(sysID)
+function ElectricSystem:ReCalculateSysInfo(sysID, machine)
     local system = self.SYSINFO[sysID]
     if table.size(system.machines) == 0 then return end
 
@@ -324,6 +324,7 @@ function ElectricSystem:ReCalculateSysInfo(sysID)
     local batteries = {}
     local consumption = 0
     -- 计算consumption，更新batteries和powers列表
+    -- TODO: 全更新一遍性能可能不太好，最好改掉
     for _, machineID in pairs(system.machines) do
         local machine = Ents[machineID].components.electricmachine
         if machine:IsOn() and machine:IsValid() then
@@ -356,8 +357,8 @@ function ElectricSystem:getSystemState(sysID)
     return self.SYSINFO[sysID].state
 end
 
-function ElectricSystem:OnElectricSysChanged(sysID)
-    self:ReCalculateSysInfo(sysID)
+function ElectricSystem:OnElectricSysChanged(sysID, machine)
+    self:ReCalculateSysInfo(sysID, machine)
     local state = self:getSystemState(sysID)
     for _, machineID in pairs(self.SYSINFO[sysID].machines) do
         Ents[machineID].components.electricmachine:RefreshState(state)
