@@ -41,7 +41,7 @@ local function fn()
 
     inst:AddComponent("inspectable")
 
-    return inst
+    return inst  
 end
 
 return Prefab('pin', fn, assets, prefabs), MakePlacer("pin_placer", "pin", "pin", "idle", nil, nil, nil, nil)

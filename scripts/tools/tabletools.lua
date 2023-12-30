@@ -20,8 +20,8 @@ _G.pairsByKeys = function(t)
     end
 end
 
--- 打印整张表，2个参数，level是展开几级子表
 local TAB = '  '
+-- 打印整张表，2个参数，level是展开几级子表
 table.tostr = function (t, level, newline, pre, tab, lv)
     local level = level or 10
     local tab = tab or ''

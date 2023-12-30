@@ -33,8 +33,11 @@ TUNING.PROTOTYPER_TREES.TRIDPRINTER = TechTree.Create({
     SCIENCE = 3
 })
 
+--[[
+    新制作栏的兼容
+]]
 
--- 这里是新制作栏的兼容，靠近科技会弹出哪个制作栏
+-- 定义靠近科技建筑会弹出的制作栏分类
 AddPrototyperDef(
     'computer', -- prefab名
     {
@@ -56,68 +59,71 @@ AddPrototyperDef(
 
 
 --[[
-    为新版制作栏添加远古、天体等常驻选项
+    为新版制作栏添加远古、天体等常驻分类
     其中制作栏标签要在STRINGS.UI.CRAFTING_FILTERS里定义
 ]]
-AddRecipeFilter({
-    name = 'ANCIENT',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_crafting_table.tex"
-})
-
-AddRecipeFilter({
-    name = 'CELESTIAL',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_celestial.tex"
-})
-
-AddRecipeFilter({
-    name = 'SHADOWFORGING',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_shadow_forge.tex"
-})
-
-AddRecipeFilter({
-    name = 'LUNARFORGING',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_lunar_forge.tex"
-})
-
-AddRecipeFilter({
-    name = 'CARTOGRAPHY',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_cartography.tex"
-})
-
-AddRecipeFilter({
-    name = 'HERMITCRABSHOP',
-    atlas = "images/crafting_menu_icons.xml",
-    image = "station_hermitcrab_shop.tex"
-})
-
-AddRecipeFilter({
-    name = 'COMPUTERSCIENCE',
-    atlas = "images/avatars.xml",
-    image = "avatar_server.tex"
-})
-
-AddRecipeFilter({
-    name = 'ELECTRICENGINEERING',
-    atlas = "images/button_icons.xml",
-    image = "mods.tex"
-})
+local custom_recipe_filters = {
+    { -- 远古科技
+        name = 'ANCIENT',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_crafting_table.tex"
+    },
+    { -- 天体科技
+        name = 'CELESTIAL',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_celestial.tex"
+    },
+    { -- 暗影术
+        name = 'SHADOWFORGING',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_shadow_forge.tex"
+    },
+    { -- 辉煌铁匠铺
+        name = 'LUNARFORGING',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_lunar_forge.tex"
+    },
+    { -- 制图桌
+        name = 'CARTOGRAPHY',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_cartography.tex"
+    },
+    { -- 寄居蟹交易
+        name = 'HERMITCRABSHOP',
+        atlas = "images/crafting_menu_icons.xml",
+        image = "station_hermitcrab_shop.tex"
+    },
+    { -- 计算机科学
+        name = 'COMPUTERSCIENCE',
+        atlas = "images/avatars.xml",
+        image = "avatar_server.tex"
+    },
+    { -- 电子信息工程
+        name = 'ELECTRICENGINEERING',
+        atlas = "images/button_icons.xml",
+        image = "mods.tex"
+    }
+}
+for _, filterdata in pairs(custom_recipe_filters) do
+    AddRecipeFilter(filterdata)
+end
 
 
+
+--[[
+    对所有可制作物品进行兼容性修改
+]]
 for _, recipe in _G.pairsByKeys(AllRecipes) do
-    -- 首先把这个物品的科技补全，这是因为定义新的AVAILABLE_TECH之前已经注册过prefab了，tectree.Create()没有注册COMPUTERSCIENCE科技
-	if recipe.level.COMPUTERSCIENCE == nil then
-		recipe.level.COMPUTERSCIENCE = 0
-	end
+    -- 首先把这个物品的科技补全，这是因为定义新的AVAILABLE_TECH之前已经注册过prefab了，
+    -- tectree.Create()没有注册COMPUTERSCIENCE等新定义的科技
+    if recipe.level.COMPUTERSCIENCE == nil then
+        recipe.level.COMPUTERSCIENCE = 0
+    end
     if recipe.level.ELECTRICENGINEERING == nil then
-		recipe.level.ELECTRICENGINEERING = 0
-	end
+        recipe.level.ELECTRICENGINEERING = 0
+    end
 
-    
+
     -- 向新的制作栏里增加内容
     if recipe.level.ANCIENT ~= 0 and recipe.level.ANCIENT <= 4 then
         AddRecipeToFilter(recipe.name, 'ANCIENT')
@@ -146,17 +152,17 @@ for _, recipe in _G.pairsByKeys(AllRecipes) do
 end
 
 --[[
-    升级科技是否兼容所有制作站
+    普通制作站科技等级可以使用蓝图升级
 ]]
 if _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE then
     local prototyperBuildings = {
-        'researchlab',
-        'researchlab2',
-        'researchlab3',
-        'researchlab4',
-        'bookstation',
-        'seafaring_prototyper',
-        'tacklestation',
+        'researchlab',          -- 科学机器
+        'researchlab2',         -- 炼金引擎
+        'researchlab3',         -- 灵子分解器
+        'researchlab4',         -- 暗影操控器
+        'bookstation',          -- 书柜
+        'seafaring_prototyper', -- 智囊团
+        'tacklestation',        -- 制图桌
         'cartographydesk',
         'madscience_lab',
         -- 'shadow_forge',为什么不行？待解决
@@ -165,20 +171,17 @@ if _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE then
     for _, v in pairs(prototyperBuildings) do
         AddPrefabPostInit(v, function(inst)
             inst:AddComponent('trader')
-            inst.components.trader:SetAcceptTest(function (inst, item)
-                if item.prefab == "techcarrier" then
-                    return true
-                end
-                return false
+            inst.components.trader:SetAcceptTest(function(inst, item)
+                return (item.prefab == "techcarrier")
             end)
-            inst.components.trader.onaccept = function (inst, giver, item)
+            inst.components.trader.onaccept = function(inst, giver, item)
                 for name, val in pairs(item.techinfo) do
                     if inst.components.prototyper.trees[name] < val then
                         inst.components.prototyper.trees[name] = val
                     end
                 end
             end
-            inst.components.trader.onrefuse = function () end
+            inst.components.trader.onrefuse = function() end
 
             local OnSave_old = inst.OnSave
             inst.OnSave = function(inst, data)

@@ -15,10 +15,10 @@ local function onhammered(inst, worker)
         inst.components.burnable:Extinguish()
     end
     inst.components.lootdropper:DropLoot()
-    local fx = SpawnPrefab("collapse_small") -- 摧毁小东西的动画
+    local fx = SpawnPrefab("collapse_small")                    -- 摧毁小东西的动画
     fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- 把动画放到合适的位置
-    fx:SetMaterial("stone") -- 动画的效果是砸石头
-    inst:Remove() -- 然后把自己去掉
+    fx:SetMaterial("stone")                                     -- 动画的效果是砸石头
+    inst:Remove()                                               -- 然后把自己去掉
 end
 
 local function onhit(inst, worker)
@@ -55,16 +55,16 @@ local function doonact(inst)
         inst._activecount = 0
         inst.SoundEmitter:KillSound("sound")
     end
-    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..'lvl2'.."_ding")
+    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_" .. 'lvl2' .. "_ding")
 end
 
 local function onbuiltsound(inst)
-    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..'lvl2'.."_place")
+    inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_" .. 'lvl2' .. "_place")
 end
 
 local function onturnon(inst)
     if inst._activetask == nil and not inst:HasTag("burnt") then
-    if inst.AnimState:IsCurrentAnimation("working_loop")
+        if inst.AnimState:IsCurrentAnimation("working_loop")
             or inst.AnimState:IsCurrentAnimation("place") then
             --NOTE: push again even if already playing, in case anidle was also pushed
             inst.AnimState:PushAnimation("working_loop", true)
@@ -74,7 +74,7 @@ local function onturnon(inst)
             -- inst.AnimState:PlayAnimation("proximity_loop", true)
         end
         if not inst.SoundEmitter:PlayingSound("idlesound") then
-            inst.SoundEmitter:PlaySound("dontstarve/commonresearchmachine_"..'lvl2'.."_idle_LP", "idlesound")
+            inst.SoundEmitter:PlaySound("dontstarve/commonresearchmachine_" .. 'lvl2' .. "_idle_LP", "idlesound")
         end
     end
 end
@@ -103,7 +103,7 @@ local function onactivate(inst)
         inst.AnimState:PlayAnimation("working_loop")
         inst.AnimState:PushAnimation("idle", false)
         if not inst.SoundEmitter:PlayingSound("sound") then
-            inst.SoundEmitter:PlaySound("dontstarve/commonresearchmachine_"..'lvl2'.."_run", "sound")
+            inst.SoundEmitter:PlaySound("dontstarve/commonresearchmachine_" .. 'lvl2' .. "_run", "sound")
         end
         inst._activecount = inst._activecount + 1
         inst:DoTaskInTime(1.5, doonact)
@@ -135,7 +135,7 @@ local function ongiftopened(inst)
     if not inst:HasTag("burnt") then
         -- inst:_PlayAnimation("gift")
         -- inst:_PushAnimation("upgrade", false)
-        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..'alchemy'.."_gift_recieve")
+        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_" .. 'alchemy' .. "_gift_recieve")
         if inst._activetask ~= nil then
             inst._activetask:Cancel()
         end
@@ -152,14 +152,14 @@ local function getLinkedThings(obj)
     }
     local x, y, z = obj:GetPosition():Get()
 
-    local neighbors = TheSim:FindEntities(x,0,z, 3, {'wire'})
+    local neighbors = TheSim:FindEntities(x, 0, z, 3, { 'wire' })
 
     for key, neighbor in pairs(neighbors) do
         -- 旁边的物体坐标
         local nx, ny, nz = neighbor:GetPosition():Get()
         -- 排除自己
         if neighbor.GUID ~= obj.GUID then
-            local dx, dz = nx-x, nz-z
+            local dx, dz = nx - x, nz - z
             if dx == 1 and dz == 0 then
                 linkThings.down = neighbor
             elseif dx == -1 and dz == 0 then
@@ -235,11 +235,13 @@ local function fn()
     inst:AddComponent("hauntable")
     inst.components.hauntable:SetHauntValue(TUNING.HAUNT_TINY)
 
+    -- 可以用来开礼物
     inst:ListenForEvent("ms_addgiftreceiver", refreshonstate)
     inst:ListenForEvent("ms_removegiftreceiver", refreshonstate)
     inst:ListenForEvent("ms_giftopened", ongiftopened)
-    
+
     return inst
 end
 
-return Prefab('tridprinter', fn, assets, prefabs), MakePlacer("tridprinter_placer", "tridprinter", "tridprinter", "idle", nil, nil, nil, 1.5)
+return Prefab('tridprinter', fn, assets, prefabs),
+    MakePlacer("tridprinter_placer", "tridprinter", "tridprinter", "idle", nil, nil, nil, 1.5)

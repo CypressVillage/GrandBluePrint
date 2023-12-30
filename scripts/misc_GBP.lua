@@ -1,7 +1,7 @@
 GLOBAL.setmetatable(env, { __index = function(t, k) return GLOBAL.rawget(GLOBAL, k) end })
 local _G = GLOBAL
 --[[
-    游戏杂项修改
+    游戏杂项修改，对原版物品的修改
 ]]
 
 -- AddPrefabPostInit('researchlab1', function(inst)
@@ -30,6 +30,7 @@ AddPrefabPostInit('sewing_tape', function(inst)
     inst:AddComponent('repair_broken_wire')
 end)
 
+-- 主世界添加电路系统
 AddPrefabPostInit('forest', function(inst)
     -- TODO:尝试判断主机
     if TheWorld.ismastersim then
@@ -127,7 +128,7 @@ AddPrefabPostInit('reskin_tool', function(inst)
     local oldonspellcast = inst.components.spellcaster.onspellcast
     inst.components.spellcaster:SetOnSpellCastFn(function(tool, target, pos, caster)
         if target == nil then
-            tool:DoTaskInTime(0.1, function()
+            tool:DoTaskInTime(0.1, function() -- 延迟，在skin_build更新后改变皮肤
                 local skin_build = inst:GetSkinBuild()
                 if skin_build then
                     caster:PushEvent('equipskinneditem', tool:GetSkinName())
@@ -149,8 +150,3 @@ end)
 
 -- 导线不能重叠放置
 -- AddComponent
-
--- Glassic API工具
-if not CONFIGS_GBP.GLASSICAPITOOLS then
-    
-end

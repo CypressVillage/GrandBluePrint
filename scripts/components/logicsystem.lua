@@ -1,57 +1,32 @@
-local NWIRE = CONFIGS_GBP.NWIRE
+local NWIRE = 64
 
-local ElectricSystem = Class(function(self, inst)
+local LogicSystem = Class(function (self, inst)
     self.inst = inst
 
     self.LINK_L = {} self.LINK_L[NWIRE] = nil
     self.LINK_R = {} self.LINK_R[NWIRE] = nil
     self.LINK_U = {} self.LINK_U[NWIRE] = nil
     self.LINK_D = {} self.LINK_D[NWIRE] = nil
-    self.MACHINES = {} self.MACHINES[NWIRE] = nil
+    self.PINS = {} self.PINS[NWIRE] = nil
     self.WIREINSYS = {} self.WIREINSYS[NWIRE] = nil
 
     self.NEWSYSID = 0
     self.SYSINFO = {}
-    -- 系统内容
-    -- SYSINFO = {
-    --     [sysID] = {
-    --         wires = {GUID, GUID, ...},
-    --         machines = {GUID, GUID, ...},
-    --         consumption = 0,
-    --         state = fine | undervoltage | overvoltage,
-    --         hasbattery = false,
-    --         haspower = false,
-    --         batteries = {},
-    --         powers = {},
-    --     },
-    --     ...
-    -- }
 end)
 
--- 获取导线连接内容
-function ElectricSystem:getLinkedThings(wireGUID)
-    return {
-        left = self.LINK_L[wireGUID],
-        right = self.LINK_R[wireGUID],
-        up = self.LINK_U[wireGUID],
-        down = self.LINK_D[wireGUID],
-        other = self.MACHINES[wireGUID],
-        -- TODO: other名字难听，换掉
-    }
-end
 
--- 获取用电器连接的第一根导线，返回nil表示用电器没有和导线链接
-function ElectricSystem:getfirstWire(GUID)
+--[[ 获取用电器连接的第一根导线，返回nil表示用电器没有和导线链接 ]]
+function LogicSystem:getfirstWire(GUID)
     return table.indexof(self.MACHINES, GUID)
 end
 
--- 获取导线所在系统
-function ElectricSystem:getSysID(wireGUID)
+--[[ 获取导线所在系统 ]]
+function LogicSystem:getSysID(wireGUID)
     return self.WIREINSYS[wireGUID]
 end
 
--- 获取机器所在系统的ID
-function ElectricSystem:getSysIDbyMachine(inst)
+--[[ 获取机器所在系统的ID ]]
+function LogicSystem:getSysIDbyMachine(inst)
     local wireGUID = self:getfirstWire(inst.GUID)
     if wireGUID ~= nil then
         return self:getSysID(wireGUID)
@@ -59,7 +34,7 @@ function ElectricSystem:getSysIDbyMachine(inst)
     return nil
 end
 
--- 获取系统信息
+-- [[ 获取系统信息 ]]
 function ElectricSystem:getSysInfo(sysID)
     return self.SYSINFO[sysID]
 end
@@ -105,7 +80,6 @@ end
 
 --[[ 
     寻找导线连接的系统，返回系统的不重复ID。
-    
     因为此时正在合并系统，所以导线可能找到多个系统
 ]]
 function ElectricSystem:getLinkSys(wire)
@@ -128,7 +102,6 @@ end
 
 --[[
     导线被放置时对系统的更改
-
     注册导线，新建系统，合并系统（如果有的话）
     可能改变的内容：
         新导线的链接状态（在regiWire()中更改）
@@ -367,4 +340,4 @@ function ElectricSystem:OnElectricSysChanged(sysID, machine)
     end
 end
 
-return ElectricSystem
+return LogicSystem
