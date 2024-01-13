@@ -155,17 +155,17 @@ end
     制作站科技等级可以使用蓝图升级
 ]]
 local prototyperBuildings = _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE and {
-    'researchlab',              -- 科学机器
-    'researchlab2',             -- 炼金引擎
-    'researchlab3',             -- 灵子分解器
-    'researchlab4',             -- 暗影操控器
-    'bookstation',              -- 书柜
-    'seafaring_prototyper',     -- 智囊团
-    'tacklestation',            -- 制图桌
-    'cartographydesk',
-    'madscience_lab',
-    -- 'shadow_forge',为什么不行？待解决
-    -- 'lunar_forge',
+    'researchlab',          -- 科学机器
+    'researchlab2',         -- 炼金引擎
+    'researchlab3',         -- 灵子分解器
+    'researchlab4',         -- 暗影操控器
+    'bookstation',          -- 书架
+    'seafaring_prototyper', -- 智囊团
+    'tacklestation',        -- 钓具容器
+    'cartographydesk',      -- 制图桌
+    'madscience_lab',       -- 疯狂科学家实验室
+    'shadow_forge',         -- 暗影术基座
+    'lunar_forge',          -- 辉煌铁匠铺
 } or {}
 table.insert(prototyperBuildings, 'tridprinter')
 for _, v in pairs(prototyperBuildings) do
@@ -185,13 +185,17 @@ for _, v in pairs(prototyperBuildings) do
 
         local OnSave_old = inst.OnSave
         inst.OnSave = function(inst, data)
-            OnSave_old(inst, data)
+            if OnSave_old then
+                OnSave_old(inst, data)
+            end
             data.techdata = inst.components.prototyper.trees
         end
 
         local OnLoad_old = inst.OnLoad
         inst.OnLoad = function(inst, data)
-            OnLoad_old(inst, data)
+            if OnLoad_old then
+                OnLoad_old(inst, data)
+            end
             if data ~= nil then
                 inst.components.prototyper.trees = data.techdata
             end
