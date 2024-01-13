@@ -1,9 +1,9 @@
 local _G = GLOBAL
 --[[
     LOG_LEVEL
-    0: 不打印信息
-    1: 打印信息
-    2: 打印信息并announce
+    0: 不打印信息，不写入log文件
+    1: 打印信息，写入log文件
+    2: 打印信息并announce，写入log文件
     ]]
 _G.LOG_LEVEL = 0
 local MODROOT = MODROOT or ''
@@ -14,7 +14,7 @@ local LOGPS2 = '[GBP DEBUG]: '
 local LOGPS3 = '[GBP ERROR]: '
 local file
 local first = true
-_G.DEBUG_GBP = false
+local DEBUG_GBP = true
 
 -- 获取时间戳
 local function getTimestamp()
@@ -61,19 +61,18 @@ end
 
 -- 全局DEBUG
 _G.dbg = function(str)
-    if LOG_LEVEL > 1 then
+    if not DEBUG_GBP then return end
+    if LOG_LEVEL >= 1 then
         log(str, LOGPS2)
     end
-    if LOG_LEVEL == 2 then
-        _G.c_announce(LOGPS2 .. str)
-    end
+    _G.c_announce(LOGPS2 .. str)
     print(LOGPS2 .. str)
 end
 
 -- 加载时打开日志文件
-if LOG_LEVEL == 2 then
-    logopen()
-end
+-- if LOG_LEVEL == 2 then
+--     logopen()
+-- end
 
 _G.logopen = logopen
 _G.logclose = logclose
