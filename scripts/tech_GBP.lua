@@ -152,50 +152,49 @@ for _, recipe in _G.pairsByKeys(AllRecipes) do
 end
 
 --[[
-    普通制作站科技等级可以使用蓝图升级
+    制作站科技等级可以使用蓝图升级
 ]]
-if _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE then
-    local prototyperBuildings = {
-        'researchlab',          -- 科学机器
-        'researchlab2',         -- 炼金引擎
-        'researchlab3',         -- 灵子分解器
-        'researchlab4',         -- 暗影操控器
-        'bookstation',          -- 书柜
-        'seafaring_prototyper', -- 智囊团
-        'tacklestation',        -- 制图桌
-        'cartographydesk',
-        'madscience_lab',
-        -- 'shadow_forge',为什么不行？待解决
-        -- 'lunar_forge',
-    }
-    for _, v in pairs(prototyperBuildings) do
-        AddPrefabPostInit(v, function(inst)
-            inst:AddComponent('trader')
-            inst.components.trader:SetAcceptTest(function(inst, item)
-                return (item.prefab == "techcarrier")
-            end)
-            inst.components.trader.onaccept = function(inst, giver, item)
-                for name, val in pairs(item.techinfo) do
-                    if inst.components.prototyper.trees[name] < val then
-                        inst.components.prototyper.trees[name] = val
-                    end
-                end
-            end
-            inst.components.trader.onrefuse = function() end
-
-            local OnSave_old = inst.OnSave
-            inst.OnSave = function(inst, data)
-                OnSave_old(inst, data)
-                data.techdata = inst.components.prototyper.trees
-            end
-
-            local OnLoad_old = inst.OnLoad
-            inst.OnLoad = function(inst, data)
-                OnLoad_old(inst, data)
-                if data ~= nil then
-                    inst.components.prototyper.trees = data.techdata
-                end
-            end
+local prototyperBuildings = _G.CONFIGS_GBP.ALLPROTOTYPERUPGRADE and {
+    'researchlab',              -- 科学机器
+    'researchlab2',             -- 炼金引擎
+    'researchlab3',             -- 灵子分解器
+    'researchlab4',             -- 暗影操控器
+    'bookstation',              -- 书柜
+    'seafaring_prototyper',     -- 智囊团
+    'tacklestation',            -- 制图桌
+    'cartographydesk',
+    'madscience_lab',
+    -- 'shadow_forge',为什么不行？待解决
+    -- 'lunar_forge',
+} or {}
+table.insert(prototyperBuildings, 'tridprinter')
+for _, v in pairs(prototyperBuildings) do
+    AddPrefabPostInit(v, function(inst)
+        inst:AddComponent('trader')
+        inst.components.trader:SetAcceptTest(function(inst, item)
+            return item.prefab == "techcarrier"
         end)
-    end
+        inst.components.trader.onaccept = function(inst, giver, item)
+            for name, val in pairs(item.techinfo) do
+                if inst.components.prototyper.trees[name] < val then
+                    inst.components.prototyper.trees[name] = val
+                end
+            end
+        end
+        inst.components.trader.onrefuse = function() end
+
+        local OnSave_old = inst.OnSave
+        inst.OnSave = function(inst, data)
+            OnSave_old(inst, data)
+            data.techdata = inst.components.prototyper.trees
+        end
+
+        local OnLoad_old = inst.OnLoad
+        inst.OnLoad = function(inst, data)
+            OnLoad_old(inst, data)
+            if data ~= nil then
+                inst.components.prototyper.trees = data.techdata
+            end
+        end
+    end)
 end
