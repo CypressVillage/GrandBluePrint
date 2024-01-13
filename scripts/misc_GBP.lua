@@ -137,13 +137,14 @@ AddPrefabPostInit('winona_battery_high', function(inst)
         inst.AnimState:ClearOverrideSymbol("plug")
     end)
 
-    -- 这部分是为了让机器电量耗尽后其他用电器不再工作，是否有效果未知
     inst.components.electricmachine:SetIsValidFn(function ()
         -- TODO: 为什么这个函数不能加inst参数？
         return not inst.components.fueled:IsEmpty()
     end)
-
+    -- 让机器电量耗尽后通知系统，改变电路状态
+    local old_DelpetedFn = inst.components.fueled.depleted
     inst.components.fueled:SetDepletedFn(function (inst)
+        old_DelpetedFn(inst)
         inst.components.electricmachine:NotifySystemChanged()
     end)
 
