@@ -28,6 +28,7 @@ local ElectricMachine = Class(function(self, inst)
 
     self.turnonfn = nil
     self.turnofffn = nil
+    self.isvalidfn = nil
 
     self.consumption = 0
     self.PERIOD = 0.5
@@ -37,7 +38,11 @@ local ElectricMachine = Class(function(self, inst)
 end)
 
 function ElectricMachine:IsValid()
-    return true
+    if self.isvalidfn then
+        return self.isvalidfn()
+    else
+        return true
+    end
 end
 
 function ElectricMachine:IsOn()
@@ -61,11 +66,11 @@ function ElectricMachine:OnRemoveEntity()
 end
 
 -- 接口，在Entity层实现
-function ElectricMachine:SetOnMachineTask(fn)
+function ElectricMachine:SetOnMachineTaskFn(fn)
     self.OnMachineTask = fn
 end
 
-function ElectricMachine:SetOnRefreshState(fn)
+function ElectricMachine:SetOnRefreshStateFn(fn)
     self.OnRefreshState = fn
 end
 
@@ -75,6 +80,10 @@ end
 
 function ElectricMachine:SetTurnOffFn(fn)
     self.turnofffn = fn
+end
+
+function ElectricMachine:SetIsValidFn(fn)
+    self.isvalidfn = fn
 end
 
 function ElectricMachine:StartMachineTask()

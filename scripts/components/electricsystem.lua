@@ -64,7 +64,8 @@ function ElectricSystem:getSysInfo(sysID)
     return self.SYSINFO[sysID]
 end
 
---[[ 注册一个新导线，返回ID。
+--[[ 注册一个新导线，返回ID。这个函数同时更新了新导线的连接状态，但是没有更新系统中的状态
+
     param: wire 导线实体
     return: wireGUID 导线的GUID
 ]]
@@ -340,8 +341,8 @@ function ElectricSystem:ReCalculateSysInfo(sysID, machine)
     end
     system.powers = powers
     system.batteries = batteries
-    system.haspower = #powers == 0 and false or true
-    system.hasbattery = #batteries == 0 and false or true
+    system.haspower = #powers ~= 0
+    system.hasbattery = #batteries ~= 0
     system.consumption = consumption
 
     if consumption >= 0 then
@@ -359,6 +360,10 @@ function ElectricSystem:getSystemState(sysID)
     return self.SYSINFO[sysID].state
 end
 
+--[[
+    首先调用ReCalculateSysInfo，收集系统中所有电器的信息，得到系统的状态
+    ，再对所有电器进行状态更新
+]]
 function ElectricSystem:OnElectricSysChanged(sysID, machine)
     self:ReCalculateSysInfo(sysID, machine)
     local state = self:getSystemState(sysID)

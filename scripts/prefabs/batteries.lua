@@ -12,18 +12,17 @@ local prefabs =
 }
 
 local function MakeBattery(data)
-
     local function onhammered(inst, worker)
         -- 如果物体可以燃烧而且正在燃烧，那么把它扑灭
         if inst.components.burnable ~= nil and inst.components.burnable:IsBurning() then
             inst.components.burnable:Extinguish()
         end
         inst.components.lootdropper:DropLoot()
-        local fx = SpawnPrefab("collapse_small") -- 摧毁小东西的动画
+        local fx = SpawnPrefab("collapse_small")                    -- 摧毁小东西的动画
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- 把动画放到合适的位置
-        fx:SetMaterial("stone") -- 动画的效果是砸石头
+        fx:SetMaterial("stone")                                     -- 动画的效果是砸石头
 
-        inst:Remove() -- 然后把自己去掉
+        inst:Remove()                                               -- 然后把自己去掉
     end
 
     local function onhit(inst, worker)
@@ -48,7 +47,7 @@ local function MakeBattery(data)
     end
 
     local function onbuiltsound(inst)
-        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_"..'lvl2'.."_place")
+        inst.SoundEmitter:PlaySound("dontstarve/common/researchmachine_" .. 'lvl2' .. "_place")
     end
 
     local function onbuilt(inst, data)
@@ -60,11 +59,11 @@ local function MakeBattery(data)
 
     ---------------------------------------------------------------------------------
     local function OnFuelEmpty()
-        
+
     end
 
     local function OnAddFuel()
-        
+
     end
 
     local function onmachinetask(inst)
@@ -83,7 +82,7 @@ local function MakeBattery(data)
         MakeObstaclePhysics(inst, .4)
 
         inst.MiniMapEntity:SetPriority(5)
-        inst.MiniMapEntity:SetIcon(data.name..'.tex')
+        inst.MiniMapEntity:SetIcon(data.name .. '.tex')
 
         inst.AnimState:SetBank(data.name)
         inst.AnimState:SetBuild(data.name)
@@ -116,17 +115,17 @@ local function MakeBattery(data)
         inst:AddComponent("fueled")
         inst.components.fueled:SetDepletedFn(OnFuelEmpty)
         inst.components.fueled:SetTakeFuelFn(OnAddFuel)
-        inst.components.fueled:InitializeFuelLevel(30*4)
+        inst.components.fueled:InitializeFuelLevel(30 * 4)
         inst.components.fueled.fueltype = nil
 
         inst:AddTag("electricbattery")
         inst:AddComponent("electricmachine")
-        inst.components.electricmachine:SetOnMachineTask(onmachinetask)
-        inst.components.electricmachine:SetOnRefreshState(function(inst)
+        inst.components.electricmachine:SetOnMachineTaskFn(onmachinetask)
+        inst.components.electricmachine:SetOnRefreshStateFn(function(inst)
             local sysID = TheWorld.components.electricsystem:getSysIDbyMachine(inst)
             if not sysID then return end
             local sysinfo = TheWorld.components.electricsystem:getSysInfo(sysID)
-            
+
             if sysinfo.haspower then
                 inst.components.fueled.rate = -1
             else
@@ -138,7 +137,7 @@ local function MakeBattery(data)
             else
                 inst.components.fueled:StopConsuming()
             end
-            dbg(inst.components.fueled:GetDebugString())
+            -- dbg(inst.components.fueled:GetDebugString())
         end)
 
         -- MakeSnowCovered(inst)
@@ -152,9 +151,9 @@ local function MakeBattery(data)
         return inst
     end
 
-    return unpack{
+    return unpack {
         Prefab(data.name, fn, assets, prefabs),
-        MakePlacer(data.name.."_placer", data.name, data.name, "off", nil, nil, nil, 1.5)
+        MakePlacer(data.name .. "_placer", data.name, data.name, "off", nil, nil, nil, 1.5)
     }
 end
 
@@ -162,9 +161,9 @@ local batteryprefabs = {}
 
 local batterydata =
 {
-    { name = "batterysm", cost = 1, fuel = 1, scale = 1.5 },
+    { name = "batterysm",  cost = 1, fuel = 1, scale = 1.5 },
     { name = "batterymed", cost = 2, fuel = 2, scale = 2 },
-    { name = "batterylg", cost = 3, fuel = 3, scale = 2.5 },
+    { name = "batterylg",  cost = 3, fuel = 3, scale = 2.5 },
 }
 
 for i, v in ipairs(batterydata) do
