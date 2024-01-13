@@ -59,6 +59,11 @@ end
 
 function ElectricMachine:OnLoad(data)
     TheWorld.components.electricsystem:OnDeployEleAppliance(self.inst)
+    if data.ison then
+        self.machine:TurnOn()
+    else
+        self.machine:TurnOff()
+    end
 end
 
 function ElectricMachine:OnRemoveEntity()
