@@ -4,7 +4,7 @@ local _G = GLOBAL
     添加自定义科技
 ]]
 
--- 注册物品科技树，表示有这种科技
+-- 向科技树中添加自定义科技
 local TechTree = require('techtree')
 table.insert(TechTree.AVAILABLE_TECH, 'COMPUTERSCIENCE')
 table.insert(TechTree.AVAILABLE_TECH, 'ELECTRICENGINEERING')
@@ -23,7 +23,7 @@ for _, v in pairs(TUNING.PROTOTYPER_TREES) do
     v.ELECTRICENGINEERING = 0
 end
 
--- 制作站可以解锁几级科技
+-- 确定制作站可以解锁的科技等级
 TUNING.PROTOTYPER_TREES.COMPUTER = TechTree.Create({
     COMPUTERSCIENCE = 1,
     SCIENCE = 2

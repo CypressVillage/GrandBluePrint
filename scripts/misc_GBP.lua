@@ -166,7 +166,7 @@ end)
 
 -- AddPrefabPostInit('firesuppressor', )
 
--- 清洁扫把对自己施法改变自己的皮肤
+-- 手持清洁扫把，鼠标右键装备栏中的清洁扫把，改变扫把的皮肤
 AddPrefabPostInit('reskin_tool', function(inst)
     -- 清洁扫把可以在物品栏里换肤
     inst:AddTag('castfrominventory')

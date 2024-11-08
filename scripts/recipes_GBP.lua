@@ -1,5 +1,9 @@
 local _G = GLOBAL
 
+--[[
+    注册贴图资源文件、地图图标、物品配方
+]]
+
 -- 贴图资源文件
 local assets = {
     Asset("ATLAS", "images/inventoryimages/electricwire.xml"),
