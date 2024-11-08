@@ -321,7 +321,10 @@ end
 
 function ElectricSystem:ReCalculateSysInfo(sysID, machine)
     local system = self.SYSINFO[sysID]
-    if table.size(system.machines) == 0 then return end
+    if table.size(system.machines) == 0 then 
+        system.state = 'nomachine'
+        return
+    end
 
     local powers = {}
     local batteries = {}
