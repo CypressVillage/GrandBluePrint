@@ -39,6 +39,14 @@ AddPrefabPostInit('forest', function(inst)
     end
 end)
 
+-- 主世界添加逻辑系统
+AddPrefabPostInit("forest", function(inst)
+    if TheWorld.ismastersim then
+        inst:AddComponent('logicsystem')
+        inst.components.logicsystem:StartSimulate()
+    end
+end)
+
 -- winona的聚光灯可以开启或关闭
 -- TODO: 关闭的时候更改贴图动画
 AddPrefabPostInit('winona_spotlight', function(inst)
